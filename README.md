@@ -1,8 +1,8 @@
-# CTAssetsPickerController
+# KITAssetsPickerController
 
 ## Introduction
 
-CTAssetsPickerController is a highly customisable iOS controller that allows picking multiple photos and videos from user's photo library. The usage and look-and-feel are just similar to UIImagePickerController. It uses **ARC** and requires **Photos** framework.
+KITAssetsPickerController is a highly customisable iOS controller that allows picking multiple photos and videos from user's photo library. The usage and look-and-feel are just similar to UIImagePickerController. It uses **ARC** and requires **Photos** framework.
 
 ![Screenshot](Screenshot.png "Screenshot")
 ![Screenshot 2](Screenshot-2.png "Screenshot 2")
@@ -21,7 +21,7 @@ CTAssetsPickerController is a highly customisable iOS controller that allows pic
 11. Pure Auto Layout. (Thanks for the great work of [PureLayout](https://github.com/smileyborg/PureLayout))
 
 ## Release Notes
-* [Release Notes](https://github.com/chiunam/CTAssetsPickerController/releases)
+* [Release Notes](https://github.com/chiunam/KITAssetsPickerController/releases)
 
 ## Minimum Requirement
 iOS 9 SDK, Minimum Deployment Target iOS 8.0
@@ -32,10 +32,10 @@ iOS 9 SDK, Minimum Deployment Target iOS 8.0
 
     ````
     platform :ios, '8.0'
-    pod 'CTAssetsPickerController',  '~> 3.1.0'
+    pod 'KITAssetsPickerController',  '~> 3.1.0'
     ````
     	
-2. [Manual Setup](https://github.com/chiunam/CTAssetsPickerController/wiki/Manual-Setup-(v3))
+2. [Manual Setup](https://github.com/chiunam/KITAssetsPickerController/wiki/Manual-Setup-(v3))
 
 
 ## Usages
@@ -43,10 +43,10 @@ iOS 9 SDK, Minimum Deployment Target iOS 8.0
 1. Import header
 
     ```` objective-c
-    #import <CTAssetsPickerController/CTAssetsPickerController.h>
+    #import <KITAssetsPickerController/KITAssetsPickerController.h>
     ````
 
-2. Create and present CTAssetsPickerController
+2. Create and present KITAssetsPickerController
 
     ```` objective-c
     // request authorization status
@@ -54,7 +54,7 @@ iOS 9 SDK, Minimum Deployment Target iOS 8.0
         dispatch_async(dispatch_get_main_queue(), ^{
             
             // init picker
-            CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
+            KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
         
             // set delegate
             picker.delegate = self;
@@ -74,7 +74,7 @@ iOS 9 SDK, Minimum Deployment Target iOS 8.0
     If the picker is presented by `presentViewController:animated:completion:` method, the delegate is responsible for dismissing the picker when the operation completes.
 
     ```` objective-c
-    - (void)assetsPickerController:(CTAssetsPickerController *)picker didFinishPickingAssets:(NSArray *)assets
+    - (void)assetsPickerController:(KITAssetsPickerController *)picker didFinishPickingAssets:(NSArray *)assets
     {
     // assets contains PHAsset objects.
     }
@@ -82,22 +82,22 @@ iOS 9 SDK, Minimum Deployment Target iOS 8.0
 
 ## Questions, Issues and Suggestions
 
-Please check with [wiki](https://github.com/chiunam/CTAssetsPickerController/wiki/) and [issues](https://github.com/chiunam/CTAssetsPickerController/issues) for common issues and questions. Please open a [new Issue] (https://github.com/chiunam/CTAssetsPickerController/issues/new) if you run into a problem specific to the picker. Bug reports and pull requests are always welcome.
+Please check with [wiki](https://github.com/chiunam/KITAssetsPickerController/wiki/) and [issues](https://github.com/chiunam/KITAssetsPickerController/issues) for common issues and questions. Please open a [new Issue] (https://github.com/chiunam/KITAssetsPickerController/issues/new) if you run into a problem specific to the picker. Bug reports and pull requests are always welcome.
 
 ## Bonus
 
-You may reuse the preview feature of the picker to view any assets. Just init a `CTAssetsPageViewController` with an array of assets and assign `pageIndex` property. Please refer to the [demo app](https://github.com/chiunam/CTAssetsPickerController/wiki/Running-demo-app) for the details.
+You may reuse the preview feature of the picker to view any assets. Just init a `KITAssetsPageViewController` with an array of assets and assign `pageIndex` property. Please refer to the [demo app](https://github.com/chiunam/KITAssetsPickerController/wiki/Running-demo-app) for the details.
 
 ```` objective-c
 NSArray *assets = @[asset1, asset2, asset3, ...];
-CTAssetsPageViewController *vc = [[CTAssetsPageViewController alloc] initWithAssets:assets];
+KITAssetsPageViewController *vc = [[KITAssetsPageViewController alloc] initWithAssets:assets];
 vc.pageIndex = assets.count - 1; // display the last asset 
 
 [self.navigationController pushViewController:vc animated:YES];
 ````    
 
 ## Documentation
-* [Online documentation](http://cocoadocs.org/docsets/CTAssetsPickerController/)
+* [Online documentation](http://cocoadocs.org/docsets/KITAssetsPickerController/)
 
 
 ## License
