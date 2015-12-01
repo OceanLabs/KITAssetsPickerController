@@ -30,8 +30,6 @@
 #import "KITAssetCollectionViewController.h"
 #import "KITAssetCollectionViewCell.h"
 #import "KITAssetsGridViewController.h"
-#import "PHAssetCollection+KITAssetsPickerController.h"
-#import "PHAsset+KITAssetsPickerController.h"
 #import "NSBundle+KITAssetsPickerController.h"
 
 
@@ -39,7 +37,7 @@
 
 
 @interface KITAssetCollectionViewController()
-<PHPhotoLibraryChangeObserver, KITAssetsGridViewControllerDelegate>
+<KITAssetsGridViewControllerDelegate>
 
 @property (nonatomic, weak) KITAssetsPickerController *picker;
 
@@ -48,9 +46,8 @@
 
 @property (nonatomic, copy) NSArray *fetchResults;
 @property (nonatomic, copy) NSArray *assetCollections;
-@property (nonatomic, strong) PHCachingImageManager *imageManager;
 
-@property (nonatomic, strong) PHAssetCollection *defaultAssetCollection;
+@property (nonatomic, strong) id<KITAssetCollectionDataSource> defaultAssetCollection;
 @property (nonatomic, assign) BOOL didShowDefaultAssetCollection;
 @property (nonatomic, assign) BOOL didSelectDefaultAssetCollection;
 
@@ -66,7 +63,6 @@
 {
     if (self = [super initWithStyle:UITableViewStylePlain])
     {
-        _imageManager = [PHCachingImageManager new];
         [self addNotificationObserver];
     }
     
@@ -79,9 +75,7 @@
     [self setupViews];
     [self setupButtons];
     [self localize];
-    [self setupDefaultAssetCollection];
     [self setupFetchResults];
-    [self registerChangeObserver];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -100,7 +94,6 @@
 
 - (void)dealloc
 {
-    [self unregisterChangeObserver];
     [self removeNotificationObserver];
 }
 
@@ -112,7 +105,6 @@
     [self setupViews];
     [self setupButtons];
     [self localize];
-    [self setupDefaultAssetCollection];
     [self setupFetchResults];
 }
 
@@ -124,7 +116,7 @@
     return (KITAssetsPickerController *)self.splitViewController.parentViewController;
 }
 
-- (NSIndexPath *)indexPathForAssetCollection:(PHAssetCollection *)assetCollection
+- (NSIndexPath *)indexPathForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection
 {
     NSInteger row = [self.assetCollections indexOfObject:assetCollection];
 
@@ -171,23 +163,6 @@
 
 - (void)setupFetchResults
 {
-    NSMutableArray *fetchResults = [NSMutableArray new];
-
-    for (NSNumber *subtypeNumber in self.picker.assetCollectionSubtypes)
-    {
-        PHAssetCollectionType type       = [PHAssetCollection KITAssetPickerAssetCollectionTypeOfSubtype:subtypeNumber.integerValue];
-        PHAssetCollectionSubtype subtype = subtypeNumber.integerValue;
-        
-        PHFetchResult *fetchResult =
-        [PHAssetCollection fetchAssetCollectionsWithType:type
-                                                 subtype:subtype
-                                                 options:self.picker.assetCollectionFetchOptions];
-        
-        [fetchResults addObject:fetchResult];
-    }
-    
-    self.fetchResults = [NSMutableArray arrayWithArray:fetchResults];
-    
     [self updateAssetCollections];
     [self reloadData];
     [self showDefaultAssetCollection];
@@ -196,32 +171,16 @@
 - (void)updateAssetCollections
 {
     NSMutableArray *assetCollections = [NSMutableArray new];
-    
-    for (PHFetchResult *fetchResult in self.fetchResults)
-    {
-        for (PHAssetCollection *assetCollection in fetchResult)
+
+        for (id<KITAssetCollectionDataSource> assetCollection in self.picker.collectionDataSources)
         {
-            NSInteger count = (assetCollection.estimatedAssetCount) ? assetCollection.estimatedAssetCount : 0;
+            NSInteger count = assetCollection.count;
             
             if (self.picker.showsEmptyAlbums || count > 0)
                 [assetCollections addObject:assetCollection];
         }
-    }
 
     self.assetCollections = [NSMutableArray arrayWithArray:assetCollections];
-}
-
-- (void)setupDefaultAssetCollection
-{
-    if (!self.picker || self.picker.defaultAssetCollection == PHAssetCollectionSubtypeAny) {
-        self.defaultAssetCollection = nil;
-        return;
-    }
-    
-    PHAssetCollectionType type = [PHAssetCollection KITAssetPickerAssetCollectionTypeOfSubtype:self.picker.defaultAssetCollection];
-    PHFetchResult *fetchResult = [PHAssetCollection fetchAssetCollectionsWithType:type subtype:self.picker.defaultAssetCollection options:self.picker.assetCollectionFetchOptions];
-    
-    self.defaultAssetCollection = fetchResult.firstObject;
 }
 
 
@@ -258,53 +217,6 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:KITAssetsPickerSelectedAssetsDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIContentSizeCategoryDidChangeNotification object:nil];
-}
-
-
-#pragma mark - Photo library change observer
-
-- (void)registerChangeObserver
-{
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-}
-
-- (void)unregisterChangeObserver
-{
-    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-}
-
-
-#pragma mark - Photo library changed
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance
-{
-    // Call might come on any background queue. Re-dispatch to the main queue to handle it.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        NSMutableArray *updatedFetchResults = nil;
-        
-        for (PHFetchResult *fetchResult in self.fetchResults)
-        {
-            PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:fetchResult];
-            
-            if (changeDetails)
-            {
-                if (!updatedFetchResults)
-                    updatedFetchResults = [self.fetchResults mutableCopy];
-                
-                [updatedFetchResults replaceObjectAtIndex:[self.fetchResults indexOfObject:fetchResult]
-                                               withObject:[changeDetails fetchResultAfterChanges]];
-            }
-        }
-        
-        if (updatedFetchResults)
-        {
-            self.fetchResults = updatedFetchResults;
-            [self updateAssetCollections];
-            [self reloadData];
-        }
-        
-    });
 }
 
 
@@ -388,11 +300,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAssetCollection *collection = self.assetCollections[indexPath.row];
+    id<KITAssetCollectionDataSource> collection = self.assetCollections[indexPath.row];
     NSUInteger count;
     
-    if (self.picker.showsNumberOfAssets)
-        count = [collection KITAssetPikcerCountOfAssetsFetchedWithOptions:self.picker.assetsFetchOptions];
+    if (self.picker.showsNumberOfAssets){
+        count = [collection count];
+    }
     else
         count = NSNotFound;
     
@@ -410,7 +323,7 @@
     return cell;
 }
 
-- (void)requestThumbnailsForCell:(KITAssetCollectionViewCell *)cell assetCollection:(PHAssetCollection *)collection
+- (void)requestThumbnailsForCell:(KITAssetCollectionViewCell *)cell assetCollection:(id<KITAssetCollectionDataSource>)collection
 {
     NSUInteger count    = cell.thumbnailStacks.thumbnailViews.count;
     NSArray *assets     = [self posterAssetsFromAssetCollection:collection count:count];
@@ -423,43 +336,22 @@
         
         if (index < assets.count)
         {
-            PHAsset *asset = assets[index];
-            [self.imageManager requestImageForAsset:asset
-                                         targetSize:targetSize
-                                        contentMode:PHImageContentModeAspectFill
-                                            options:self.picker.thumbnailRequestOptions
-                                      resultHandler:^(UIImage *image, NSDictionary *info){
-                                          [thumbnailView setHidden:NO];
-                                          [thumbnailView bind:image assetCollection:collection];
-                                      }];
+            id<KITAssetDataSource> asset = assets[index];
+            [asset thumbnailImageWithCompletionHandler:^(UIImage *image){
+                [thumbnailView setHidden:NO];
+                [thumbnailView bind:image assetCollection:collection];
+            }];
         }
     }
 }
 
-- (NSArray *)posterAssetsFromAssetCollection:(PHAssetCollection *)collection count:(NSUInteger)count;
+- (NSArray *)posterAssetsFromAssetCollection:(id<KITAssetCollectionDataSource>)collection count:(NSUInteger)count;
 {
-    PHFetchOptions *options = [PHFetchOptions new];
-    options.predicate       = self.picker.assetsFetchOptions.predicate; // aligned specified predicate
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-    
-    PHFetchResult *result = [PHAsset fetchKeyAssetsInAssetCollection:collection options:options];
-    
-    NSUInteger location = 0;
-    NSUInteger length   = (result.count < count) ? result.count : count;
-    NSArray *assets     = [self itemsFromFetchResult:result range:NSMakeRange(location, length)];
-    
+    NSMutableArray *assets = [[NSMutableArray alloc] init];
+    for (NSInteger i = 0; i < MIN(count, collection.count); i++){
+        [assets addObject:[collection objectAtIndex:i]];
+    }
     return assets;
-}
-
-- (NSArray *)itemsFromFetchResult:(PHFetchResult *)result range:(NSRange)range
-{
-    if (result.count == 0)
-        return nil;
-    
-    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
-    NSArray *array = [result objectsAtIndexes:indexSet];
-    
-    return array;
 }
 
 
@@ -467,7 +359,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAssetCollection *collection = self.assetCollections[indexPath.row];
+    id<KITAssetCollectionDataSource> collection = self.assetCollections[indexPath.row];
     
     KITAssetsGridViewController *vc = [KITAssetsGridViewController new];
     vc.assetCollection = collection;
@@ -532,7 +424,7 @@
 
 #pragma mark - Grid view controller delegate
 
-- (void)assetsGridViewController:(KITAssetsGridViewController *)picker photoLibraryDidChangeForAssetCollection:(PHAssetCollection *)assetCollection
+- (void)assetsGridViewController:(KITAssetsGridViewController *)picker photoLibraryDidChangeForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection
 {
     NSIndexPath *indexPath = [self indexPathForAssetCollection:assetCollection];
     

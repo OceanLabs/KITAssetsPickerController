@@ -48,11 +48,8 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 
 @interface KITAssetsGridViewController ()
-<PHPhotoLibraryChangeObserver>
 
 @property (nonatomic, weak) KITAssetsPickerController *picker;
-@property (nonatomic, strong) PHFetchResult *fetchResult;
-@property (nonatomic, strong) PHCachingImageManager *imageManager;
 
 @property (nonatomic, assign) CGRect previousPreheatRect;
 @property (nonatomic, assign) CGRect previousBounds;
@@ -77,8 +74,6 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     
     if (self = [super initWithCollectionViewLayout:layout])
     {
-        _imageManager = [PHCachingImageManager new];
-        
         self.extendedLayoutIncludesOpaqueBars = YES;
         
         self.collectionView.allowsMultipleSelection = YES;
@@ -101,7 +96,6 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     [super viewDidLoad];
     [self setupViews];
     [self setupButtons];
-    [self registerChangeObserver];
     [self addGestureRecognizer];
     [self addNotificationObserver];
     [self resetCachedAssetImages];
@@ -111,8 +105,6 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     [super viewWillAppear:animated];
     [self setupAssets];
-    [self updateTitle:self.picker.selectedAssets];
-    [self updateButton:self.picker.selectedAssets];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -136,7 +128,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     [super viewDidLayoutSubviews];
     
-    if (!self.didLayoutSubviews && self.fetchResult.count > 0)
+    if (!self.didLayoutSubviews && self.assetCollection.count > 0)
     {
         [self scrollToBottomIfNeeded];
         self.didLayoutSubviews = YES;
@@ -145,7 +137,6 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)dealloc
 {
-    [self unregisterChangeObserver];
     [self removeNotificationObserver];
 }
 
@@ -157,9 +148,9 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     return (KITAssetsPickerController *)self.splitViewController.parentViewController;
 }
 
-- (PHAsset *)assetAtIndexPath:(NSIndexPath *)indexPath
+- (id<KITAssetDataSource> )assetAtIndexPath:(NSIndexPath *)indexPath
 {
-    return (self.fetchResult.count > 0) ? self.fetchResult[indexPath.item] : nil;
+    return (self.assetCollection.count > 0) ? [self.assetCollection objectAtIndex:indexPath.item] : nil;
 }
 
 
@@ -184,11 +175,6 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)setupAssets
 {
-    PHFetchResult *fetchResult =
-    [PHAsset fetchAssetsInAssetCollection:self.assetCollection
-                                  options:self.picker.assetsFetchOptions];
-    
-    self.fetchResult = fetchResult;
     [self reloadData];
 }
 
@@ -231,7 +217,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
  
     if (shouldScrollToBottom)
     {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:self.fetchResult.count-1 inSection:0];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:self.assetCollection.count-1 inSection:0];
         [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
     }
 }
@@ -245,18 +231,13 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     
     [center addObserver:self
-               selector:@selector(assetsPickerSelectedAssetsDidChange:)
-                   name:KITAssetsPickerSelectedAssetsDidChangeNotification
-                 object:nil];
-    
-    [center addObserver:self
-               selector:@selector(assetsPickerDidSeleKITAsset:)
-                   name:KITAssetsPickerDidSeleKITAssetNotification
+               selector:@selector(assetsPickerDidSelectAsset:)
+                   name:KITAssetsPickerDidSelectAssetNotification
                  object:nil];
 
     [center addObserver:self
-               selector:@selector(assetsPickerDidDeseleKITAsset:)
-                   name:KITAssetsPickerDidDeseleKITAssetNotification
+               selector:@selector(assetsPickerDidDeselectAsset:)
+                   name:KITAssetsPickerDidDeselectAssetNotification
                  object:nil];
 }
 
@@ -264,128 +245,26 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     
-    [center removeObserver:self name:KITAssetsPickerSelectedAssetsDidChangeNotification object:nil];
-    [center removeObserver:self name:KITAssetsPickerDidSeleKITAssetNotification object:nil];
-    [center removeObserver:self name:KITAssetsPickerDidDeseleKITAssetNotification object:nil];
-}
-
-
-#pragma mark - Photo library change observer
-
-- (void)registerChangeObserver
-{
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-}
-
-- (void)unregisterChangeObserver
-{
-    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-}
-
-
-#pragma mark - Photo library changed
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance
-{
-    // Call might come on any background queue. Re-dispatch to the main queue to handle it.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:self.fetchResult];
-        
-        if (changeDetails)
-        {
-            self.fetchResult = [changeDetails fetchResultAfterChanges];
-            
-            UICollectionView *collectionView = self.collectionView;
-            
-            if (![changeDetails hasIncrementalChanges] || [changeDetails hasMoves])
-            {
-                [collectionView reloadData];
-                [self resetCachedAssetImages];
-            }
-            else
-            {
-                // if we have incremental diffs, tell the collection view to animate insertions and deletions
-                [collectionView performBatchUpdates:^{
-                    NSIndexSet *removedIndexes = [changeDetails removedIndexes];
-                    if ([removedIndexes count])
-                    {
-                        [collectionView deleteItemsAtIndexPaths:[removedIndexes KITAssetsPickerIndexPathsFromIndexesWithSection:0]];
-                    }
-
-                    NSIndexSet *insertedIndexes = [changeDetails insertedIndexes];
-                    if ([insertedIndexes count])
-                    {
-                        [collectionView insertItemsAtIndexPaths:[insertedIndexes KITAssetsPickerIndexPathsFromIndexesWithSection:0]];
-                    }
-
-                    NSIndexSet *changedIndexes = [changeDetails changedIndexes];
-                    if ([changedIndexes count])
-                    {
-                        [collectionView reloadItemsAtIndexPaths:[changedIndexes KITAssetsPickerIndexPathsFromIndexesWithSection:0] ];
-                    }
-                } completion:^(BOOL finished){
-                    if (finished)
-                        [self resetCachedAssetImages];
-                }];
-            }
-            
-            [self.footer bind:self.fetchResult];
-            
-            if (self.fetchResult.count == 0)
-                [self showNoAssets];
-            else
-                [self hideNoAssets];
-        }
-        
-        if ([self.delegate respondsToSelector:@selector(assetsGridViewController:photoLibraryDidChangeForAssetCollection:)])
-            [self.delegate assetsGridViewController:self photoLibraryDidChangeForAssetCollection:self.assetCollection];
-        
-    });
-}
-
-
-#pragma mark - Selected assets changed
-
-- (void)assetsPickerSelectedAssetsDidChange:(NSNotification *)notification
-{
-    NSArray *selectedAssets = (NSArray *)notification.object;
-    [self updateTitle:selectedAssets];
-    [self updateButton:selectedAssets];
-}
-
-- (void)updateTitle:(NSArray *)selectedAssets
-{
-    if (selectedAssets.count > 0)
-        self.title = self.picker.selectedAssetsString;
-    else
-        self.title = self.assetCollection.localizedTitle;
-}
-
-- (void)updateButton:(NSArray *)selectedAssets
-{
-    if (self.picker.alwaysEnableDoneButton)
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    else
-        self.navigationItem.rightBarButtonItem.enabled = (self.picker.selectedAssets.count > 0);
+    [center removeObserver:self name:KITAssetsPickerDidSelectAssetNotification object:nil];
+    [center removeObserver:self name:KITAssetsPickerDidDeselectAssetNotification object:nil];
 }
 
 
 #pragma mark - Did de/select asset notifications
 
-- (void)assetsPickerDidSeleKITAsset:(NSNotification *)notification
+- (void)assetsPickerDidSelectAsset:(NSNotification *)notification
 {
-    PHAsset *asset = (PHAsset *)notification.object;
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self.fetchResult indexOfObject:asset] inSection:0];
+    id<KITAssetDataSource> asset = (id<KITAssetDataSource> )notification.object;
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self.assetCollection indexOfObject:asset] inSection:0];
     [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
     
     [self updateSelectionOrderLabels];
 }
 
-- (void)assetsPickerDidDeseleKITAsset:(NSNotification *)notification
+- (void)assetsPickerDidDeselectAsset:(NSNotification *)notification
 {
-    PHAsset *asset = (PHAsset *)notification.object;
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self.fetchResult indexOfObject:asset] inSection:0];
+    id<KITAssetDataSource> asset = (id<KITAssetDataSource> )notification.object;
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self.assetCollection indexOfObject:asset] inSection:0];
     [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
     
     [self updateSelectionOrderLabels];
@@ -398,7 +277,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems])
     {
-        PHAsset *asset = [self assetAtIndexPath:indexPath];
+        id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
         KITAssetsGridViewCell *cell = (KITAssetsGridViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         cell.selectionIndex = [self.picker.selectedAssets indexOfObject:asset];
     }
@@ -425,10 +304,10 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
         CGPoint point           = [longPress locationInView:self.collectionView];
         NSIndexPath *indexPath  = [self.collectionView indexPathForItemAtPoint:point];
         
-        KITAssetsPageViewController *vc = [[KITAssetsPageViewController alloc] initWithFetchResult:self.fetchResult];
+        KITAssetsPageViewController *vc = [[KITAssetsPageViewController alloc] initWithCollection:self.picker.collectionDataSources[indexPath.row]];
         vc.allowsSelection = YES;
         vc.pageIndex = indexPath.item;
-        
+
         [self.navigationController pushViewController:vc animated:YES];
     }
 }
@@ -438,7 +317,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)reloadData
 {
-    if (self.fetchResult.count > 0)
+    if (self.assetCollection.count > 0)
     {
         [self hideNoAssets];
         [self.collectionView reloadData];
@@ -454,7 +333,6 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)resetCachedAssetImages
 {
-    [self.imageManager stopCachingImagesForAllAssets];
     self.previousPreheatRect = CGRectZero;
 }
 
@@ -499,19 +377,12 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     for (NSIndexPath *indexPath in indexPaths)
     {
-        PHAsset *asset = [self assetAtIndexPath:indexPath];
+        id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
         
         if (!asset) break;
         
         UICollectionViewLayoutAttributes *attributes =
         [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath];
-        
-        CGSize targetSize = [self.picker imageSizeForContainerSize:attributes.size];
-        
-        [self.imageManager startCachingImagesForAssets:@[asset]
-                                            targetSize:targetSize
-                                           contentMode:PHImageContentModeAspectFill
-                                               options:self.picker.thumbnailRequestOptions];
     }
 }
 
@@ -519,19 +390,12 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     for (NSIndexPath *indexPath in indexPaths)
     {
-        PHAsset *asset = [self assetAtIndexPath:indexPath];
+        id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
         
         if (!asset) break;
 
         UICollectionViewLayoutAttributes *attributes =
         [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath];
-        
-        CGSize targetSize = [self.picker imageSizeForContainerSize:attributes.size];
-        
-        [self.imageManager stopCachingImagesForAssets:@[asset]
-                                           targetSize:targetSize
-                                          contentMode:PHImageContentModeAspectFill
-                                              options:self.picker.thumbnailRequestOptions];
     }
 }
 
@@ -604,7 +468,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.fetchResult.count;
+    return self.assetCollection.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -613,7 +477,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     [collectionView dequeueReusableCellWithReuseIdentifier:KITAssetsGridViewCellIdentifier
                                               forIndexPath:indexPath];
     
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldEnableAsset:)])
         cell.enabled = [self.picker.delegate assetsPickerController:self.picker shouldEnableAsset:asset];
@@ -644,20 +508,16 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     return cell;
 }
 
-- (void)requestThumbnailForCell:(KITAssetsGridViewCell *)cell targetSize:(CGSize)targetSize asset:(PHAsset *)asset
+- (void)requestThumbnailForCell:(KITAssetsGridViewCell *)cell targetSize:(CGSize)targetSize asset:(id<KITAssetDataSource> )asset
 {
     NSInteger tag = cell.tag + 1;
     cell.tag = tag;
-
-    [self.imageManager requestImageForAsset:asset
-                                 targetSize:targetSize
-                                contentMode:PHImageContentModeAspectFill
-                                    options:self.picker.thumbnailRequestOptions
-                              resultHandler:^(UIImage *image, NSDictionary *info){
-                                  // Only update the image if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                  if (cell.tag == tag)
-                                      [(KITAssetThumbnailView *)cell.backgroundView bind:image asset:asset];
-                              }];
+    
+    [asset thumbnailImageWithCompletionHandler:^(UIImage *image){
+        if (cell.tag == tag){
+            [(KITAssetThumbnailView *)cell.backgroundView bind:image asset:asset];
+        }
+    }];
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -667,7 +527,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
                                        withReuseIdentifier:KITAssetsGridViewFooterIdentifier
                                               forIndexPath:indexPath];
     
-    [footer bind:self.fetchResult];
+//    [footer bind:self.fetchResult];
     
     self.footer = footer;
     
@@ -679,51 +539,51 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
     KITAssetsGridViewCell *cell = (KITAssetsGridViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
     if (!cell.isEnabled)
         return NO;
-    else if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSeleKITAsset:)])
-        return [self.picker.delegate assetsPickerController:self.picker shouldSeleKITAsset:asset];
+    else if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSelectAsset:)])
+        return [self.picker.delegate assetsPickerController:self.picker shouldSelectAsset:asset];
     else
         return YES;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
-    [self.picker seleKITAsset:asset];
+    [self.picker selectAsset:asset];
     
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didSeleKITAsset:)])
-        [self.picker.delegate assetsPickerController:self.picker didSeleKITAsset:asset];
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didSelectAsset:)])
+        [self.picker.delegate assetsPickerController:self.picker didSelectAsset:asset];
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldDeseleKITAsset:)])
-        return [self.picker.delegate assetsPickerController:self.picker shouldDeseleKITAsset:asset];
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldDeselectAsset:)])
+        return [self.picker.delegate assetsPickerController:self.picker shouldDeselectAsset:asset];
     else
         return YES;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
-    [self.picker deseleKITAsset:asset];
+    [self.picker deselectAsset:asset];
     
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didDeseleKITAsset:)])
-        [self.picker.delegate assetsPickerController:self.picker didDeseleKITAsset:asset];
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didDeselectAsset:)])
+        [self.picker.delegate assetsPickerController:self.picker didDeselectAsset:asset];
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldHighlightAsset:)])
         return [self.picker.delegate assetsPickerController:self.picker shouldHighlightAsset:asset];
@@ -733,7 +593,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didHighlightAsset:)])
         [self.picker.delegate assetsPickerController:self.picker didHighlightAsset:asset];
@@ -741,7 +601,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PHAsset *asset = [self assetAtIndexPath:indexPath];
+    id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didUnhighlightAsset:)])
         [self.picker.delegate assetsPickerController:self.picker didUnhighlightAsset:asset];

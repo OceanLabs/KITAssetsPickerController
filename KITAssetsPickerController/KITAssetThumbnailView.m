@@ -28,7 +28,6 @@
 #import "KITAssetsPickerDefines.h"
 #import "KITAssetThumbnailView.h"
 #import "KITAssetThumbnailOverlay.h"
-#import "PHAsset+KITAssetsPickerController.h"
 #import "NSDateFormatter+KITAssetsPickerController.h"
 
 
@@ -119,7 +118,7 @@
 
 #pragma - Bind asset and image
 
-- (void)bind:(UIImage *)image asset:(PHAsset *)asset;
+- (void)bind:(UIImage *)image asset:(id<KITAssetDataSource> )asset;
 {
     [self setupOverlayForAsset:asset];
     
@@ -130,37 +129,16 @@
     [self updateConstraintsIfNeeded];
 }
 
-- (void)setupOverlayForAsset:(PHAsset *)asset
+- (void)setupOverlayForAsset:(id<KITAssetDataSource> )asset
 {
-    if (asset.KITAssetsPickerIsVideo)
-    {
-        if (!self.overlay) {
-            self.overlay = [[KITAssetThumbnailOverlay alloc] initWithFrame:self.bounds];
-            [self addSubview:self.overlay];
-        }
-        
-        NSString *duration = nil;
-
-        if (self.showsDuration)
-        {
-            NSDateFormatter *df = [NSDateFormatter new];
-            duration = [df KITAssetsPickerStringFromTimeInterval:asset.duration];
-        }
-    
-        [self.overlay bind:asset duration:duration];
-    }
-    
-    else
-    {
-        [self.overlay removeFromSuperview];
-        self.overlay = nil;
-    }        
+    [self.overlay removeFromSuperview];
+    self.overlay = nil;
 }
 
 
 #pragma - Bind asset collection and image
 
-- (void)bind:(UIImage *)image assetCollection:(PHAssetCollection *)assetCollection;
+- (void)bind:(UIImage *)image assetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
 {
     [self setupOverlayForAssetCollection:assetCollection];
     
@@ -171,24 +149,10 @@
     [self updateConstraintsIfNeeded];
 }
 
-- (void)setupOverlayForAssetCollection:(PHAssetCollection *)assetCollection
+- (void)setupOverlayForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection
 {
-    if (assetCollection.assetCollectionType == PHAssetCollectionTypeSmartAlbum &&
-        assetCollection.assetCollectionSubtype != PHAssetCollectionSubtypeSmartAlbumAllHidden)
-    {
-        if (!self.overlay) {
-            self.overlay = [[KITAssetThumbnailOverlay alloc] initWithFrame:self.bounds];
-            [self addSubview:self.overlay];
-        }
-        
-        [self.overlay bind:assetCollection];
-    }
-    
-    else
-    {
-        [self.overlay removeFromSuperview];
-        self.overlay = nil;
-    }
+    [self.overlay removeFromSuperview];
+    self.overlay = nil;
 }
 
 

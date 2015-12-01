@@ -31,21 +31,13 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
+    
             // init picker
             KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
             
             // set delegate
             picker.delegate = self;
             
-            // create options for fetching assets collection (sort by date desendingly)
-            PHFetchOptions *fetchOptions = [PHFetchOptions new];
-            fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-            
-            // assign options
-            picker.assetsFetchOptions = fetchOptions;
             
             // to present picker as a form sheet in iPad
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -54,12 +46,10 @@
             // present picker
             [self presentViewController:picker animated:YES completion:nil];
             
-        });
-    }];
 }
 
 
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldScrollToBottomForAssetCollection:(PHAssetCollection *)assetCollection
+- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldScrollToBottomForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection
 {
     // As assets are sorted by date and latest assets are on top of grid view,
     // we do not scroll the asset grid view to the bottom on shown.

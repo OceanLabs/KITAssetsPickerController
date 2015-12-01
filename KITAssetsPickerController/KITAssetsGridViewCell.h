@@ -25,7 +25,6 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
 #import "KITAssetThumbnailView.h"
 
 
@@ -39,6 +38,6 @@
 @property (nonatomic, weak) UIColor *disabledColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic, weak) UIColor *highlightedColor UI_APPEARANCE_SELECTOR;
 
-- (void)bind:(PHAsset *)asset;
+- (void)bind:(id<KITAssetDataSource> )asset;
 
 @end

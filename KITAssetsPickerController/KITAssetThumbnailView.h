@@ -25,15 +25,15 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
-
+#import "KITAssetDataSource.h"
+#import "KITAssetCollectionDataSource.h"
 
 @interface KITAssetThumbnailView : UIView
 
 @property (nonatomic, assign) BOOL showsDuration;
 @property (nonatomic, strong) UIImage *backgroundImage;
 
-- (void)bind:(UIImage *)image asset:(PHAsset *)asset;
-- (void)bind:(UIImage *)image assetCollection:(PHAssetCollection *)assetCollection;
+- (void)bind:(UIImage *)image asset:(id<KITAssetDataSource> )asset;
+- (void)bind:(UIImage *)image assetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
 
 @end

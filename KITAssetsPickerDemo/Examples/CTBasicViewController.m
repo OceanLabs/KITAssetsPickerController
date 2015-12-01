@@ -26,9 +26,7 @@
 
 #import "CTBasicViewController.h"
 
-
 #define tableViewRowHeight 80.0f
-
 
 @implementation CTBasicViewController
 
@@ -58,15 +56,13 @@
     
     
     // init properties
-    self.assets = [[NSMutableArray alloc] init];
+    self.assets = @[];
+    self.collections = @[[[CTAssetCollectionDataSource alloc] init]];
 
     self.dateFormatter = [[NSDateFormatter alloc] init];
     self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
     self.dateFormatter.timeStyle = NSDateFormatterMediumStyle;
     
-    self.requestOptions = [[PHImageRequestOptions alloc] init];
-    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -89,24 +85,21 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-
-            // init picker
-            KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
-            
-            // set delegate
-            picker.delegate = self;
-            
-            // to present picker as a form sheet in iPad
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-                picker.modalPresentationStyle = UIModalPresentationFormSheet;
-            
-            // present picker
-            [self presentViewController:picker animated:YES completion:nil];
-
-        });
-    }];
+    
+    // init picker
+    KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
+    picker.collectionDataSources = self.collections;
+    
+    // set delegate
+    picker.delegate = self;
+    
+    // to present picker as a form sheet in iPad
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        picker.modalPresentationStyle = UIModalPresentationFormSheet;
+    
+    // present picker
+    [self presentViewController:picker animated:YES completion:nil];
+    
 }
 
 #pragma mark - Table view data source
@@ -128,32 +121,31 @@
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
 
-    PHAsset *asset = [self.assets objectAtIndex:indexPath.row];
-    cell.textLabel.text         = [self.dateFormatter stringFromDate:asset.creationDate];
+    id<KITAssetDataSource> asset = [self.assets objectAtIndex:indexPath.row];
+//    cell.textLabel.text         = [self.dateFormatter stringFromDate:asset.creationDate];
     cell.detailTextLabel.text   = [NSString stringWithFormat:@"%ld X %ld", (long)asset.pixelWidth, (long)asset.pixelHeight];
     cell.accessoryType          = UITableViewCellAccessoryDisclosureIndicator;
     cell.clipsToBounds          = YES;
 
-    PHImageManager *manager = [PHImageManager defaultManager];
     CGFloat scale = UIScreen.mainScreen.scale;
     CGSize targetSize = CGSizeMake(tableViewRowHeight * scale, tableViewRowHeight * scale);
 
-    [manager requestImageForAsset:asset
-                       targetSize:targetSize
-                      contentMode:PHImageContentModeAspectFill
-                          options:self.requestOptions
-                    resultHandler:^(UIImage *image, NSDictionary *info){
-                            cell.imageView.image = image;
-                            [cell setNeedsLayout];
-                            [cell layoutIfNeeded];
-                    }];
+//    [manager requestImageForAsset:asset
+//                       targetSize:targetSize
+//                      contentMode:PHImageContentModeAspectFill
+//                          options:self.requestOptions
+//                    resultHandler:^(UIImage *image, NSDictionary *info){
+//                            cell.imageView.image = image;
+//                            [cell setNeedsLayout];
+//                            [cell layoutIfNeeded];
+//                    }];
 
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    KITAssetsPageViewController *vc = [[KITAssetsPageViewController alloc] initWithAssets:self.assets];
+    KITAssetsPageViewController *vc = [[KITAssetsPageViewController alloc] initWithCollection:self.assets];
     vc.pageIndex = indexPath.row;
 
     [self.navigationController pushViewController:vc animated:YES];

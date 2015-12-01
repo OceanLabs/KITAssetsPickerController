@@ -26,9 +26,8 @@
 
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
-
-
+#import "KITAssetDataSource.h"
+#import "KITAssetCollectionDataSource.h"
 
 @protocol KITAssetsPickerControllerDelegate;
 
@@ -41,6 +40,8 @@
  *  The assets picker’s delegate object.
  */
 @property (nonatomic, weak) id <KITAssetsPickerControllerDelegate> delegate;
+
+@property (nonatomic, weak) NSArray <id <KITAssetCollectionDataSource>> *collectionDataSources;
 
 /**
  *  Set the `assetCollectionSubtypes` to specify which asset collections (albums) to be shown in the picker.
@@ -59,22 +60,7 @@
  *  If there are more than one asset collections that match the subtype value of `defaultAssetCollection`, the
  *  first matched asset collection will be the default asset collection.
  */
-@property (nonatomic, assign) PHAssetCollectionSubtype defaultAssetCollection;
-
-/**
- *  Set the `PHFetchOptions` to specify options when fetching asset collections (albums).
- *
- *  @see assetsFetchOptions
- */
-@property (nonatomic, strong) PHFetchOptions *assetCollectionFetchOptions;
-
-/**
- *  Set the `PHFetchOptions` to specify options when fetching assets.
- *
- *  @see assetCollectionFetchOptions
- */
-@property (nonatomic, strong) PHFetchOptions *assetsFetchOptions;
-
+@property (nonatomic, assign) id<KITAssetCollectionDataSource> defaultAssetCollection;
 
 /**
  *  The selected assets.
@@ -146,18 +132,18 @@
  *
  *  @param asset The asset to be selected.
  *
- *  @see deseleKITAsset:
+ *  @see deselectAsset:
  */
-- (void)seleKITAsset:(PHAsset *)asset;
+- (void)selectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Deselects an asset in the picker.
  *
  *  @param asset The asset to be deselected.
  *
- *  @see seleKITAsset:
+ *  @see selectAsset:
  */
-- (void)deseleKITAsset:(PHAsset *)asset;
+- (void)deselectAsset:(id<KITAssetDataSource> )asset;
 
 @end
 
@@ -228,8 +214,7 @@
  *
  *  @return `YES` (the default) if the asset grid should scroll to bottom on shown or `NO` if it should not.
  */
-
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldScrollToBottomForAssetCollection:(PHAssetCollection *)assetCollection;
+- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldScrollToBottomForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
 
 
 /**
@@ -246,7 +231,7 @@
  *
  *  @see assetsPickerController:shouldShowAsset:
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldEnableAsset:(PHAsset *)asset;
+- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldEnableAsset:(id<KITAssetDataSource> )asset;
 
 
 /**
@@ -261,9 +246,9 @@
  *
  *  @return `YES` if the asset should be selected or `NO` if it should not.
  *
- *  @see assetsPickerController:shouldDeseleKITAsset:
+ *  @see assetsPickerController:shouldDeselectAsset:
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldSeleKITAsset:(PHAsset *)asset;
+- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldSelectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that the asset was selected.
@@ -271,9 +256,9 @@
  *  @param picker The controller object managing the assets picker interface.
  *  @param asset  The asset that was selected.
  *
- *  @see assetsPickerController:didDeseleKITAsset:
+ *  @see assetsPickerController:didDeselectAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didSeleKITAsset:(PHAsset *)asset;
+- (void)assetsPickerController:(KITAssetsPickerController *)picker didSelectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Asks the delegate if the specified asset should be deselected.
@@ -283,9 +268,9 @@
  *
  *  @return `YES` if the asset should be deselected or `NO` if it should not.
  *
- *  @see assetsPickerController:shouldSeleKITAsset:
+ *  @see assetsPickerController:shouldSelectAsset:
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldDeseleKITAsset:(PHAsset *)asset;
+- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldDeselectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that the item at the specified path was deselected.
@@ -293,9 +278,9 @@
  *  @param picker The controller object managing the assets picker interface.
  *  @param asset  The asset that was deselected.
  *
- *  @see assetsPickerController:didSeleKITAsset:
+ *  @see assetsPickerController:didSelectAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didDeseleKITAsset:(PHAsset *)asset;
+- (void)assetsPickerController:(KITAssetsPickerController *)picker didDeselectAsset:(id<KITAssetDataSource> )asset;
 
 
 
@@ -311,7 +296,7 @@
  *
  *  @return `YES` if the asset should be highlighted or `NO` if it should not.
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldHighlightAsset:(PHAsset *)asset;
+- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldHighlightAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that asset was highlighted.
@@ -321,7 +306,7 @@
  *
  *  @see assetsPickerController:didUnhighlightAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didHighlightAsset:(PHAsset *)asset;
+- (void)assetsPickerController:(KITAssetsPickerController *)picker didHighlightAsset:(id<KITAssetDataSource> )asset;
 
 
 /**
@@ -332,7 +317,7 @@
  *
  *  @see assetsPickerController:didHighlightAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didUnhighlightAsset:(PHAsset *)asset;
+- (void)assetsPickerController:(KITAssetsPickerController *)picker didUnhighlightAsset:(id<KITAssetDataSource> )asset;
 
 
 
@@ -353,14 +338,14 @@ extern NSString * const KITAssetsPickerSelectedAssetsDidChangeNotification;
  *
  *  The notification’s `object` is a `PHAsset` that is selected
  */
-extern NSString * const KITAssetsPickerDidSeleKITAssetNotification;
+extern NSString * const KITAssetsPickerDidSelectAssetNotification;
 
 /**
  *  Sent when asset is deselected
  *
  *  The notification’s `object` is a `PHAsset` that is deselected
  */
-extern NSString * const KITAssetsPickerDidDeseleKITAssetNotification;
+extern NSString * const KITAssetsPickerDidDeselectAssetNotification;
 
 
 @end

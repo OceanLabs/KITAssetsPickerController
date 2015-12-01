@@ -44,7 +44,7 @@
 
 @property (nonatomic, assign) BOOL didSetupConstraints;
 
-@property (nonatomic, strong) PHAssetCollection *collection;
+@property (nonatomic, strong) id<KITAssetCollectionDataSource>collection;
 @property (nonatomic, assign) NSUInteger count;
 
 @end
@@ -116,7 +116,7 @@
 
 - (void)setupPlaceholderImage
 {
-    NSString *imageName = [self placeHolderImageNameOfCollectionSubtype:self.collection.assetCollectionSubtype];
+    NSString *imageName = [self placeHolderImageNameOfCollectionSubtype:self.collection];
     UIImage *image = [UIImage KITAssetsPickerImageNamed:imageName];
     image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
@@ -127,18 +127,8 @@
     }
 }
 
-- (NSString *)placeHolderImageNameOfCollectionSubtype:(PHAssetCollectionSubtype)subtype
+- (NSString *)placeHolderImageNameOfCollectionSubtype:(id<KITAssetCollectionDataSource>)subtype
 {
-    if (subtype == PHAssetCollectionSubtypeSmartAlbumUserLibrary)
-        return @"GridEmptyCameraRoll";
-    
-    else if (subtype == PHAssetCollectionSubtypeSmartAlbumAllHidden)
-        return @"GridHiddenAlbum";
-    
-    else if (subtype == PHAssetCollectionSubtypeAlbumCloudShared)
-        return @"GridEmptyAlbumShared";
-    
-    else
         return @"GridEmptyAlbum";
 }
 
@@ -285,14 +275,14 @@
 
 #pragma mark - Bind asset collection
 
-- (void)bind:(PHAssetCollection *)collection count:(NSUInteger)count
+- (void)bind:(id<KITAssetCollectionDataSource>)collection count:(NSUInteger)count
 {
     self.collection = collection;
     self.count      = count;
     
     [self setupPlaceholderImage];
 
-    [self.titleLabel setText:collection.localizedTitle];
+    [self.titleLabel setText:collection.title];
     
     if (count != NSNotFound)
     {

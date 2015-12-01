@@ -31,9 +31,7 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
+    
             // init picker
             KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
             
@@ -41,11 +39,8 @@
             picker.delegate = self;
             
             // create options for fetching slo-mo videos only
-            PHFetchOptions *assetsFetchOptions = [PHFetchOptions new];
-            assetsFetchOptions.predicate = [NSPredicate predicateWithFormat:@"(mediaSubtype & %d) != 0", PHAssetMediaSubtypeVideoHighFrameRate];
-            
+    
             // assign options
-            picker.assetsFetchOptions = assetsFetchOptions;
 
             // hide empty albums
             picker.showsEmptyAlbums = NO;
@@ -57,8 +52,6 @@
             // present picker
             [self presentViewController:picker animated:YES completion:nil];
             
-        });
-    }];
 }
 
 @end

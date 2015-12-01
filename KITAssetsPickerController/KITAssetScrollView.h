@@ -33,8 +33,6 @@
 
 
 extern NSString * const KITAssetScrollViewDidTapNotification;
-extern NSString * const KITAssetScrollViewPlayerWillPlayNotification;
-extern NSString * const KITAssetScrollViewPlayerWillPauseNotification;
 
 
 @interface KITAssetScrollView : UIScrollView
@@ -42,10 +40,8 @@ extern NSString * const KITAssetScrollViewPlayerWillPauseNotification;
 @property (nonatomic, assign) BOOL allowsSelection;
 
 @property (nonatomic, strong, readonly) UIImage *image;
-@property (nonatomic, strong, readonly) AVPlayer *player;
 
 @property (nonatomic, strong, readonly) UIImageView *imageView;
-@property (nonatomic, strong, readonly) KITAssetPlayButton *playButton;
 @property (nonatomic, strong, readonly) KITAssetSelectionButton *selectionButton;
 
 
@@ -54,12 +50,8 @@ extern NSString * const KITAssetScrollViewPlayerWillPauseNotification;
 
 - (void)setProgress:(CGFloat)progress;
 
-- (void)bind:(PHAsset *)asset image:(UIImage *)image requestInfo:(NSDictionary *)info;
-- (void)bind:(AVPlayerItem *)playerItem requestInfo:(NSDictionary *)info;
+- (void)bind:(id<KITAssetDataSource>)asset image:(UIImage *)image requestInfo:(NSDictionary *)info;
 
 - (void)updateZoomScalesAndZoom:(BOOL)zoom;
-
-- (void)playVideo;
-- (void)pauseVideo;
 
 @end

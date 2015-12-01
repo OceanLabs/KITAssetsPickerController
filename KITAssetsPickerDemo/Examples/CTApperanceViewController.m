@@ -197,9 +197,6 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
             // init picker
             KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
             
@@ -216,8 +213,6 @@
             // present picker
             [self presentViewController:picker animated:YES completion:nil];
             
-        });
-    }];
 }
 
 

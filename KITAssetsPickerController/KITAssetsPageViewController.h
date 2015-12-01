@@ -25,9 +25,8 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
 
-
+#import "KITAssetCollectionDataSource.h"
 
 
 
@@ -53,7 +52,7 @@
  *
  *  @return An instance of `KITAssetPageViewController` initialized to show the asset items in `fetchResult`.
  */
-- (instancetype)initWithFetchResult:(PHFetchResult *)fetchResult;
+- (instancetype)initWithCollection:(id<KITAssetCollectionDataSource> )collection;
 
 /**
  *  Initializes a newly created view controller with an array of assets.

@@ -31,7 +31,6 @@
 #import "NSNumberFormatter+KITAssetsPickerController.h"
 #import "NSBundle+KITAssetsPickerController.h"
 #import "UIImage+KITAssetsPickerController.h"
-#import "PHAsset+KITAssetsPickerController.h"
 
 
 
@@ -46,12 +45,9 @@
 @property (nonatomic, assign, getter = isStatusBarHidden) BOOL statusBarHidden;
 
 @property (nonatomic, copy) NSArray *assets;
-@property (nonatomic, strong, readonly) PHAsset *asset;
+@property (nonatomic, strong, readonly) id<KITAssetDataSource> asset;
 
 @property (nonatomic, strong) KITAssetsPageView *pageView;
-
-@property (nonatomic, strong) UIBarButtonItem *playButton;
-@property (nonatomic, strong) UIBarButtonItem *pauseButton;
 
 @end
 
@@ -61,11 +57,11 @@
 
 @implementation KITAssetsPageViewController
 
-- (instancetype)initWithFetchResult:(PHFetchResult *)fetchResult
+- (instancetype)initWithCollection:(id<KITAssetCollectionDataSource>)collection
 {
     NSMutableArray *assets = [NSMutableArray new];
     
-    for (PHAsset *asset in fetchResult)
+    for (id<KITAssetDataSource> asset in collection)
         [assets addObject:asset];
     
     return [self initWithAssets:[NSArray arrayWithArray:assets]];
@@ -121,31 +117,6 @@
     [self.view setNeedsUpdateConstraints];
 }
 
-- (void)setupButtons
-{
-    if (!self.playButton)
-    {
-        UIImage *playImage = [UIImage KITAssetsPickerImageNamed:@"PlayButton"];
-        playImage = [playImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        
-        UIBarButtonItem *playButton =
-        [[UIBarButtonItem alloc] initWithImage:playImage style:UIBarButtonItemStyleDone target:self action:@selector(playAsset:)];
-        
-        self.playButton = playButton;
-    }
-    
-    if (!self.pauseButton)
-    {
-        UIImage *pasueImage = [UIImage KITAssetsPickerImageNamed:@"PauseButton"];
-        pasueImage = [pasueImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        
-        UIBarButtonItem *pauseButton =
-        [[UIBarButtonItem alloc] initWithImage:pasueImage style:UIBarButtonItemStylePlain target:self action:@selector(pauseAsset:)];
-        
-        self.pauseButton = pauseButton;
-    }
-}
-
 
 #pragma mark - Update title
 
@@ -163,13 +134,8 @@
 #pragma mark - Update toolbar
 
 - (void)updateToolbar
-{
-    [self setupButtons];
-    
-    if ([self.asset KITAssetsPickerIsVideo])
-        self.toolbarItems = @[[self toolbarSpace], self.playButton, [self toolbarSpace]];
-    else
-        self.toolbarItems = nil;
+{    
+    self.toolbarItems = nil;
 }
 
 - (void)replaceToolbarButton:(UIBarButtonItem *)button
@@ -201,7 +167,7 @@
     
     if (pageIndex >= 0 && pageIndex < count)
     {
-        PHAsset *asset = [self.assets objectAtIndex:pageIndex];
+        id<KITAssetDataSource> asset = [self.assets objectAtIndex:pageIndex];
         
         KITAssetItemViewController *page = [KITAssetItemViewController assetItemViewControllerForAsset:asset];
         page.allowsSelection = self.allowsSelection;
@@ -216,7 +182,7 @@
     }
 }
 
-- (PHAsset *)asset
+- (id<KITAssetDataSource> )asset
 {
     return ((KITAssetItemViewController *)self.viewControllers[0]).asset;
 }
@@ -226,12 +192,12 @@
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
-    PHAsset *asset = ((KITAssetItemViewController *)viewController).asset;
+    id<KITAssetDataSource> asset = ((KITAssetItemViewController *)viewController).asset;
     NSInteger index = [self.assets indexOfObject:asset];
     
     if (index > 0)
     {
-        PHAsset *beforeAsset = [self.assets objectAtIndex:(index - 1)];
+        id<KITAssetDataSource> beforeAsset = [self.assets objectAtIndex:(index - 1)];
         KITAssetItemViewController *page = [KITAssetItemViewController assetItemViewControllerForAsset:beforeAsset];
         page.allowsSelection = self.allowsSelection;
         
@@ -243,13 +209,13 @@
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
-    PHAsset *asset  = ((KITAssetItemViewController *)viewController).asset;
+    id<KITAssetDataSource> asset  = ((KITAssetItemViewController *)viewController).asset;
     NSInteger index = [self.assets indexOfObject:asset];
     NSInteger count = self.assets.count;
     
     if (index < count - 1)
     {
-        PHAsset *afterAsset = [self.assets objectAtIndex:(index + 1)];
+        id<KITAssetDataSource> afterAsset = [self.assets objectAtIndex:(index + 1)];
         KITAssetItemViewController *page = [KITAssetItemViewController assetItemViewControllerForAsset:afterAsset];
         page.allowsSelection = self.allowsSelection;
         
@@ -291,20 +257,6 @@
                    name:KITAssetScrollViewDidTapNotification
                  object:nil];
     
-    [center addObserver:self
-               selector:@selector(assetScrollViewPlayerDidPlayToEnd:)
-                   name:AVPlayerItemDidPlayToEndTimeNotification
-                 object:nil];    
-    
-    [center addObserver:self
-               selector:@selector(assetScrollViewPlayerWillPlay:)
-                   name:KITAssetScrollViewPlayerWillPlayNotification
-                 object:nil];
-    
-    [center addObserver:self
-               selector:@selector(assetScrollViewPlayerWillPause:)
-                   name:KITAssetScrollViewPlayerWillPauseNotification
-                 object:nil];    
 }
 
 - (void)removeNotificationObserver
@@ -312,9 +264,6 @@
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     
     [center removeObserver:self name:KITAssetScrollViewDidTapNotification object:nil];
-    [center removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-    [center removeObserver:self name:KITAssetScrollViewPlayerWillPlayNotification object:nil];
-    [center removeObserver:self name:KITAssetScrollViewPlayerWillPauseNotification object:nil];
 }
 
 
@@ -326,23 +275,6 @@
     
     if (gesture.numberOfTapsRequired == 1)
         [self toggleFullscreen:gesture];
-}
-
-- (void)assetScrollViewPlayerDidPlayToEnd:(NSNotification *)notification
-{
-    [self replaceToolbarButton:self.playButton];
-    [self setFullscreen:NO];
-}
-
-- (void)assetScrollViewPlayerWillPlay:(NSNotification *)notification
-{
-    [self replaceToolbarButton:self.pauseButton];
-    [self setFullscreen:YES];
-}
-
-- (void)assetScrollViewPlayerWillPause:(NSNotification *)notification
-{
-    [self replaceToolbarButton:self.playButton];
 }
 
 
@@ -375,19 +307,12 @@
     [nav setNavigationBarHidden:NO];
     [nav.navigationBar setAlpha:0.0f];
     
-    if ([self.asset KITAssetsPickerIsVideo])
-    {
-        [nav setToolbarHidden:NO];
-        [nav.toolbar setAlpha:0.0f];
-    }
     
     [UIView animateWithDuration:0.2
                      animations:^{
                          [self setNeedsStatusBarAppearanceUpdate];
                          [nav.navigationBar setAlpha:1.0f];
                          
-                         if ([self.asset KITAssetsPickerIsVideo])
-                             [nav.toolbar setAlpha:1.0f];
                      }];
 }
 
@@ -403,19 +328,6 @@
                          [nav.navigationBar setAlpha:0.0f];
                          [nav.toolbar setAlpha:0.0f];
                      }];
-}
-
-
-#pragma mark - Playback
-
-- (void)playAsset:(id)sender
-{
-    [((KITAssetItemViewController *)self.viewControllers[0]) playAsset:sender];
-}
-
-- (void)pauseAsset:(id)sender
-{
-    [((KITAssetItemViewController *)self.viewControllers[0]) pauseAsset:sender];
 }
 
 

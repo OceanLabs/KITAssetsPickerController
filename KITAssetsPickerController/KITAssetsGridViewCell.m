@@ -28,7 +28,6 @@
 #import "KITAssetsPickerDefines.h"
 #import "KITAssetsGridViewCell.h"
 #import "KITAssetsGridSelectedView.h"
-#import "PHAsset+KITAssetsPickerController.h"
 #import "NSDateFormatter+KITAssetsPickerController.h"
 #import "UIImage+KITAssetsPickerController.h"
 
@@ -36,7 +35,7 @@
 
 @interface KITAssetsGridViewCell ()
 
-@property (nonatomic, strong) PHAsset *asset;
+@property (nonatomic, strong) id<KITAssetDataSource> asset;
 
 @property (nonatomic, strong) UIImageView *disabledImageView;
 @property (nonatomic, strong) UIView *disabledView;
@@ -182,23 +181,12 @@
 }
 
 
-- (void)bind:(PHAsset *)asset
+- (void)bind:(id<KITAssetDataSource> )asset
 {
     self.asset = asset;
     
     [self setNeedsUpdateConstraints];
     [self updateConstraintsIfNeeded];
-}
-
-
-#pragma mark - Accessibility Label
-
-- (NSString *)accessibilityLabel
-{
-    if (self.selectedView.accessibilityLabel)
-        return [NSString stringWithFormat:@"%@, %@", self.selectedView.accessibilityLabel, self.asset.accessibilityLabel];
-    else
-        return self.asset.accessibilityLabel;
 }
 
 @end

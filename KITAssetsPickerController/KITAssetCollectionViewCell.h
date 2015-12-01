@@ -25,9 +25,8 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
 #import "KITAssetThumbnailStacks.h"
-
+#import "KITAssetCollectionDataSource.h"
 
 
 @interface KITAssetCollectionViewCell : UITableViewCell
@@ -49,6 +48,6 @@
 
 
 - (instancetype)initWithThumbnailSize:(CGSize)size reuseIdentifier:(NSString *)reuseIdentifier;
-- (void)bind:(PHAssetCollection *)collection count:(NSUInteger)count;
+- (void)bind:(id<KITAssetCollectionDataSource>)collection count:(NSUInteger)count;
 
 @end

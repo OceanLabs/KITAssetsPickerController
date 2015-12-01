@@ -31,9 +31,6 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
             // init picker
             KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
             
@@ -46,22 +43,12 @@
             components.day -= 7;
             NSDate *lastWeek  = [calendar dateFromComponents:components];
 
-            // create options for fetching assets taken within this week
-            PHFetchOptions *fetchOptions = [PHFetchOptions new];
-            fetchOptions.predicate = [NSPredicate predicateWithFormat:@"(creationDate >= %@)", lastWeek];
-            
-            // assign options
-            picker.assetsFetchOptions = fetchOptions;
-
             // to present picker as a form sheet in iPad
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
                 picker.modalPresentationStyle = UIModalPresentationFormSheet;
             
             // present picker
             [self presentViewController:picker animated:YES completion:nil];
-            
-        });
-    }];
 }
 
 @end

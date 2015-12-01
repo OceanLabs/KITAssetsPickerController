@@ -25,12 +25,11 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
-
+#import "KITAssetDataSource.h"
 
 @interface KITAssetThumbnailOverlay : UIView
 
-- (void)bind:(PHAsset *)asset duration:(NSString *)duration;
-- (void)bind:(PHAssetCollection *)assetCollection;
+- (void)bind:(id<KITAssetDataSource> )asset duration:(NSString *)duration;
+- (void)bind:(id<KITAssetDataSource> )assetCollection;
 
 @end

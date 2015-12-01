@@ -28,12 +28,14 @@
 #import <KITAssetsPickerController/KITAssetsPickerController.h>
 #import <KITAssetsPickerController/KITAssetsPageViewController.h>
 
+#import "CTAssetCollectionDataSource.h"
+
 @interface CTBasicViewController : UITableViewController
 <KITAssetsPickerControllerDelegate>
 
-@property (nonatomic, copy) NSArray *assets;
+@property (nonatomic, strong) NSArray *assets;
+@property (strong, nonatomic) NSArray *collections;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
-@property (nonatomic, strong) PHImageRequestOptions *requestOptions;
 
 
 @end

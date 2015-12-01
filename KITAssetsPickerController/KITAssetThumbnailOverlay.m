@@ -27,9 +27,7 @@
 #import <PureLayout/PureLayout.h>
 #import "KITAssetThumbnailOverlay.h"
 #import "UIImage+KITAssetsPickerController.h"
-#import "PHAsset+KITAssetsPickerController.h"
-#import "PHAssetCollection+KITAssetsPickerController.h"
-
+#import "KITAssetCollectionDataSource.h"
 
 
 @interface KITAssetThumbnailOverlay ()
@@ -110,9 +108,8 @@
 
 #pragma - Bind asset and duration
 
-- (void)bind:(PHAsset *)asset duration:(NSString *)duration;
+- (void)bind:(id<KITAssetDataSource> )asset duration:(NSString *)duration;
 {
-    self.badge.image = [asset badgeImage];
     self.badge.layoutMargins = [self layoutMarginsForAsset:asset];
     self.duration.text = duration;
     
@@ -120,27 +117,26 @@
     [self updateConstraintsIfNeeded];
 }
 
-- (UIEdgeInsets)layoutMarginsForAsset:(PHAsset *)asset
+- (UIEdgeInsets)layoutMarginsForAsset:(id<KITAssetDataSource> )asset
 {
-    if (asset.KITAssetsPickerIsHighFrameRateVideo)
-        return UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
-    
-    else if (asset.KITAssetsPickerIsTimelapseVideo)
-        return UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
-    
-    else if (asset.KITAssetsPickerIsVideo)
-        return UIEdgeInsetsMake(4.5, 4.5, 4.5, 4.5);
-    
-    else
+//    if (asset.KITAssetsPickerIsHighFrameRateVideo)
+//        return UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
+//    
+//    else if (asset.KITAssetsPickerIsTimelapseVideo)
+//        return UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
+//    
+//    else if (asset.KITAssetsPickerIsVideo)
+//        return UIEdgeInsetsMake(4.5, 4.5, 4.5, 4.5);
+//    
+//    else
         return UIEdgeInsetsZero;
 }
 
 
 #pragma - Bind asset collection
 
-- (void)bind:(PHAssetCollection *)assetCollection;
+- (void)bind:(id<KITAssetCollectionDataSource>)assetCollection;
 {
-    self.badge.image = [assetCollection badgeImage];
     self.badge.layoutMargins = [self layoutMarginsForAssetCollection:assetCollection];
     self.duration.text = nil;
     
@@ -148,7 +144,7 @@
     [self updateConstraintsIfNeeded];    
 }
 
-- (UIEdgeInsets)layoutMarginsForAssetCollection:(PHAssetCollection *)assetCollection
+- (UIEdgeInsets)layoutMarginsForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection
 {
     return UIEdgeInsetsMake(4.0, 4.0, 4.0, 4.0);
 }

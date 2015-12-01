@@ -36,7 +36,6 @@
 - (CGSize)assetThumbnailSize;
 - (NSString *)selectedAssetsString;
 
-- (PHImageRequestOptions *)thumbnailRequestOptions;
 - (CGSize)imageSizeForContainerSize:(CGSize)size;
 
 @end

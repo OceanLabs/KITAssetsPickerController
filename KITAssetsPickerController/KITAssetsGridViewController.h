@@ -25,8 +25,7 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
-
+#import "KITAssetCollectionDataSource.h"
 
 @class KITAssetsGridViewController;
 
@@ -34,7 +33,7 @@
 
 @protocol KITAssetsGridViewControllerDelegate <NSObject>
 
-- (void)assetsGridViewController:(KITAssetsGridViewController *)picker photoLibraryDidChangeForAssetCollection:(PHAssetCollection *)assetCollection;
+- (void)assetsGridViewController:(KITAssetsGridViewController *)picker photoLibraryDidChangeForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
 
 @end
 
@@ -43,7 +42,7 @@
 @interface KITAssetsGridViewController : UICollectionViewController
 
 @property (nonatomic, weak) id<KITAssetsGridViewControllerDelegate> delegate;
-@property (nonatomic, strong) PHAssetCollection *assetCollection;
+@property (nonatomic, strong) id<KITAssetCollectionDataSource> assetCollection;
 
 @end
 

@@ -31,25 +31,11 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
             // init picker
             KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
             
             // set delegate
             picker.delegate = self;
-            
-            // only show certain albums (iCloud shared photo stream)
-            picker.assetCollectionSubtypes =
-            @[[NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumCloudShared]];
-            
-            // create options for fetching asset collection (sort by asset count)
-            PHFetchOptions *fetchOptions = [PHFetchOptions new];
-            fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"estimatedAssetCount" ascending:NO]];
-            
-            // assign options
-            picker.assetCollectionFetchOptions = fetchOptions;
             
             // to present picker as a form sheet in iPad
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -58,8 +44,6 @@
             // present picker
             [self presentViewController:picker animated:YES completion:nil];
             
-        });
-    }];
 }
 
 @end

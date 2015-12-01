@@ -31,27 +31,21 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            // init picker
-            KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
-            
-            // set delegate
-            picker.delegate = self;
-            
-            // set initial selected assets
-            picker.selectedAssets = [NSMutableArray arrayWithArray:self.assets];
-            
-            // to present picker as a form sheet in iPad
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-                picker.modalPresentationStyle = UIModalPresentationFormSheet;
-            
-            // present picker
-            [self presentViewController:picker animated:YES completion:nil];
-            
-        });
-    }];
+    // init picker
+    KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
+    
+    // set delegate
+    picker.delegate = self;
+    
+    // set initial selected assets
+    picker.selectedAssets = [NSMutableArray arrayWithArray:self.assets];
+    
+    // to present picker as a form sheet in iPad
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        picker.modalPresentationStyle = UIModalPresentationFormSheet;
+    
+    // present picker
+    [self presentViewController:picker animated:YES completion:nil];
 }
 
 @end

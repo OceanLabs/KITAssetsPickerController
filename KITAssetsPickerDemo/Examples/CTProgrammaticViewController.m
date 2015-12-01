@@ -28,8 +28,7 @@
 
 @interface CTProgrammaticViewController ()
 
-@property (nonatomic, strong) PHFetchResult *result;
-@property (nonatomic, strong) PHFetchOptions *options;
+@property (nonatomic, strong) NSArray *fetchResult;
 @property (nonatomic, strong) NSMutableArray *selectedAssets;
 
 @end
@@ -52,16 +51,7 @@
     
     self.toolbarItems = @[space, startButton];
     
-    // get album of Camera Roll
-    PHFetchResult *assetCollections =
-    [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum
-                                             subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary
-                                             options:nil];
-    // create assets fetch options
-    self.options = [PHFetchOptions new];
-    self.options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-
-    self.result = [PHAsset fetchAssetsInAssetCollection:assetCollections.firstObject options:self.options];
+   
 }
 
 - (void)showAlert:(id)sender
@@ -85,9 +75,6 @@
 
 - (void)start
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
             // init picker
             KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
             
@@ -95,37 +82,16 @@
             picker.delegate = self;
             
             // set default album (Camera Roll)
-            picker.defaultAssetCollection = PHAssetCollectionSubtypeSmartAlbumUserLibrary;
-            
+    
             // align assets fetch options
-            picker.assetsFetchOptions = self.options;
-            
+    
             // to present picker as a form sheet in iPad
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
                 picker.modalPresentationStyle = UIModalPresentationFormSheet;
             
             // present picker
             [self presentViewController:picker animated:YES completion:^{
-                [self seleKITAssetsForAssetsPickertController:picker];
             }];
-            
-        });
-    }];
-}
-
-- (void)seleKITAssetsForAssetsPickertController:(KITAssetsPickerController *)picker
-{
-    NSInteger count = 0;
-    CGFloat pause = 1.0;
-    
-    for (NSInteger index = self.result.count - 1; index > self.result.count - 6; index--)
-    {
-        PHAsset *asset = [self.result objectAtIndex:index];
-        [picker performSelector:@selector(seleKITAsset:) withObject:asset afterDelay:count * pause];
-        [picker performSelector:@selector(deseleKITAsset:) withObject:asset afterDelay:(count + 5) * pause];
-        
-        count ++;
-    }
 }
 
 

@@ -25,34 +25,31 @@
  */
 
 #import "CTMaxSelectionViewController.h"
+#import "KITAssetDataSource.h"
+#import "KITAssetCollectionDataSource.h"
 
 
 @implementation CTMaxSelectionViewController
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            // init picker
-            KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
-            
-            // set delegate
-            picker.delegate = self;
-            
-            // to present picker as a form sheet in iPad
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-                picker.modalPresentationStyle = UIModalPresentationFormSheet;
-            
-            // present picker
-            [self presentViewController:picker animated:YES completion:nil];
-            
-        });
-    }];
+    // init picker
+    KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
+    
+    // set delegate
+    picker.delegate = self;
+    
+    // to present picker as a form sheet in iPad
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        picker.modalPresentationStyle = UIModalPresentationFormSheet;
+    
+    // present picker
+    [self presentViewController:picker animated:YES completion:nil];
+    
 }
 
 // implement should select asset delegate
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldSeleKITAsset:(PHAsset *)asset
+- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldSelectAsset:(id<KITAssetDataSource> )asset
 {
     NSInteger max = 3;
     

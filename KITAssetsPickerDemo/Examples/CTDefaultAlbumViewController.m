@@ -31,9 +31,6 @@
 
 - (void)pickAssets:(id)sender
 {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
             // init picker
             KITAssetsPickerController *picker = [[KITAssetsPickerController alloc] init];
             
@@ -41,7 +38,6 @@
             picker.delegate = self;
             
             // set default album (Camera Roll)
-            picker.defaultAssetCollection = PHAssetCollectionSubtypeSmartAlbumUserLibrary;
             
             // to present picker as a form sheet in iPad
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -50,8 +46,6 @@
             // present picker
             [self presentViewController:picker animated:YES completion:nil];
             
-        });
-    }];
 }
 
 @end

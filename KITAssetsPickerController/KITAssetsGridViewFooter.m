@@ -112,35 +112,36 @@
     [super updateConstraints];
 }
 
-- (void)bind:(PHFetchResult *)result
-{
-    NSNumberFormatter *nf = [NSNumberFormatter new];
-    
-    NSString *numberOfVideos = @"";
-    NSString *numberOfPhotos = @"";
-    
-    NSUInteger videoCount = [result countOfAssetsWithMediaType:PHAssetMediaTypeVideo];
-    NSUInteger photoCount = [result countOfAssetsWithMediaType:PHAssetMediaTypeImage];
-    
-    if (videoCount > 0)
-        numberOfVideos = [nf KITAssetsPickerStringFromAssetsCount:videoCount];
-    
-    if (photoCount > 0)
-        numberOfPhotos = [nf KITAssetsPickerStringFromAssetsCount:photoCount];
-    
-    if (photoCount > 0 && videoCount > 0)
-        self.label.text = [NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Photos, %@ Videos", nil), numberOfPhotos, numberOfVideos];
-    else if (photoCount > 0 && videoCount <= 0)
-        self.label.text = [NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Photos", nil), numberOfPhotos];
-    else if (photoCount <= 0 && videoCount > 0)
-        self.label.text = [NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Videos", nil), numberOfVideos];
-    else
-        self.label.text = @"";
-    
-    self.hidden = (result.count == 0);
-    
-    [self setNeedsUpdateConstraints];
-    [self updateConstraintsIfNeeded];
-}
+//TODO
+//- (void)bind:(PHFetchResult *)result
+//{
+//    NSNumberFormatter *nf = [NSNumberFormatter new];
+//    
+//    NSString *numberOfVideos = @"";
+//    NSString *numberOfPhotos = @"";
+//    
+//    NSUInteger videoCount = [result countOfAssetsWithMediaType:PHAssetMediaTypeVideo];
+//    NSUInteger photoCount = [result countOfAssetsWithMediaType:PHAssetMediaTypeImage];
+//    
+//    if (videoCount > 0)
+//        numberOfVideos = [nf KITAssetsPickerStringFromAssetsCount:videoCount];
+//    
+//    if (photoCount > 0)
+//        numberOfPhotos = [nf KITAssetsPickerStringFromAssetsCount:photoCount];
+//    
+//    if (photoCount > 0 && videoCount > 0)
+//        self.label.text = [NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Photos, %@ Videos", nil), numberOfPhotos, numberOfVideos];
+//    else if (photoCount > 0 && videoCount <= 0)
+//        self.label.text = [NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Photos", nil), numberOfPhotos];
+//    else if (photoCount <= 0 && videoCount > 0)
+//        self.label.text = [NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Videos", nil), numberOfVideos];
+//    else
+//        self.label.text = @"";
+//    
+//    self.hidden = (result.count == 0);
+//    
+//    [self setNeedsUpdateConstraints];
+//    [self updateConstraintsIfNeeded];
+//}
 
 @end

@@ -42,20 +42,18 @@
 
 
 NSString * const KITAssetsPickerSelectedAssetsDidChangeNotification = @"KITAssetsPickerSelectedAssetsDidChangeNotification";
-NSString * const KITAssetsPickerDidSeleKITAssetNotification = @"KITAssetsPickerDidSeleKITAssetNotification";
-NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPickerDidDeseleKITAssetNotification";
+NSString * const KITAssetsPickerDidSelectAssetNotification = @"KITAssetsPickerDidSelectAssetNotification";
+NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPickerDidDeselectAssetNotification";
 
 
 
 @interface KITAssetsPickerController ()
-<PHPhotoLibraryChangeObserver, UISplitViewControllerDelegate, UINavigationControllerDelegate>
+<UISplitViewControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, assign) BOOL shouldCollapseDetailViewController;
 
 @property (nonatomic, assign) CGSize assetCollectionThumbnailSize;
 @property (nonatomic, assign) CGSize assetThumbnailSize;
-
-@property (nonatomic, strong) PHImageRequestOptions *thumbnailRequestOptions;
 
 @end
 
@@ -69,18 +67,14 @@ NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPicke
     {
         _shouldCollapseDetailViewController = YES;
         _assetCollectionThumbnailSize       = KITAssetCollectionThumbnailSize;
-        _assetCollectionFetchOptions        = nil;
-        _assetsFetchOptions                 = nil;
         _selectedAssets                     = [NSMutableArray new];
         _showsCancelButton                  = YES;
         _showsEmptyAlbums                   = YES;
         _showsNumberOfAssets                = YES;
         _alwaysEnableDoneButton             = NO;
         _showsSelectionIndex                = NO;
-        _defaultAssetCollection             = PHAssetCollectionSubtypeAny;
+        _defaultAssetCollection             = nil;
         
-        [self initAssetCollectionSubtypes];
-        [self initThumbnailRequestOptions];
         self.preferredContentSize           = KITAssetsPickerPopoverContentSize;
     }
     
@@ -92,15 +86,13 @@ NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPicke
     [super viewDidLoad];
     [self setupViews];
     [self setupEmptyViewController];
-    [self checkAuthorizationStatus];
+    [self checkAssetsCount];
     [self addKeyValueObserver];
-    [self registerChangeObserver];
 }
 
 - (void)dealloc
 {
     [self removeKeyValueObserver];
-    [self unregisterChangeObserver];
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle
@@ -118,111 +110,11 @@ NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPicke
         return nil;
 }
 
-
-
-#pragma mark - Init properties
-
-- (void)initAssetCollectionSubtypes
-{
-    _assetCollectionSubtypes =
-    @[[NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumUserLibrary],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumMyPhotoStream],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumRecentlyAdded],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumFavorites],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumPanoramas],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumVideos],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumSlomoVideos],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumTimelapses],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumBursts],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumAllHidden],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumGeneric],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumRegular],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumSyncedAlbum],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumSyncedEvent],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumSyncedFaces],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumImported],
-      [NSNumber numberWithInt:PHAssetCollectionSubtypeAlbumCloudShared]];
-    
-    // Add iOS 9's new albums
-    if ([[PHAsset new] respondsToSelector:@selector(sourceType)])
-    {
-        NSMutableArray *subtypes = [NSMutableArray arrayWithArray:self.assetCollectionSubtypes];
-        [subtypes insertObject:[NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumSelfPortraits] atIndex:4];
-        [subtypes insertObject:[NSNumber numberWithInt:PHAssetCollectionSubtypeSmartAlbumScreenshots] atIndex:10];
-        
-        self.assetCollectionSubtypes = [NSArray arrayWithArray:subtypes];
-    }
-}
-
-- (void)initThumbnailRequestOptions
-{
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    options.resizeMode = PHImageRequestOptionsResizeModeExact;
-    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
- 
-    _thumbnailRequestOptions = options;
-}
-
-
-#pragma mark - Check authorization status
-
-- (void)checkAuthorizationStatus
-{
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    
-    switch (status)
-    {
-        case PHAuthorizationStatusNotDetermined:
-            [self requestAuthorizationStatus];
-            break;
-        case PHAuthorizationStatusRestricted:
-        case PHAuthorizationStatusDenied:
-        {
-            [self showAccessDenied];
-            break;
-        }
-        case PHAuthorizationStatusAuthorized:
-        default:
-        {
-            [self checkAssetsCount];
-            break;
-        }
-    }
-}
-
-
-#pragma mark - Request authorization status
-
-- (void)requestAuthorizationStatus
-{
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-        switch (status) {
-            case PHAuthorizationStatusAuthorized:
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self checkAssetsCount];
-                });
-                break;
-            }
-            default:
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self showAccessDenied];
-                });
-                break;
-            }
-        }
-    }];
-}
-
-
 #pragma mark - Check assets count
 
 - (void)checkAssetsCount
 {
-    PHFetchResult *fetchResult = [PHAsset fetchAssetsWithOptions:self.assetsFetchOptions];
-    
-    if (fetchResult.count > 0) {
+    if (self.collectionDataSources.count > 0) {
         [self showAssetCollectionViewController];
     } else {
         [self showNoAssets];
@@ -398,45 +290,6 @@ NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPicke
 }
 
 
-#pragma mark - Photo library change observer
-
-- (void)registerChangeObserver
-{
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-}
-
-- (void)unregisterChangeObserver
-{
-    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-}
-
-
-
-#pragma mark - Photo library changed
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance
-{
-    // Call might come on any background queue. Re-dispatch to the main queue to handle it.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        NSMutableArray *deseleKITAssets = [NSMutableArray new];
-        
-        for (PHAsset *asset in self.selectedAssets)
-        {
-            PHObjectChangeDetails *changeDetails = [changeInstance changeDetailsForObject:asset];
-    
-            if ([changeDetails objectWasDeleted])
-                [deseleKITAssets addObject:asset];
-        }
-        
-        // Deselect asset if it was deleted from library
-        for (PHAsset *asset in deseleKITAssets)
-            [self deseleKITAsset:asset];
-    });
-}
-
-
-
 #pragma mark - Toggle button
 
 - (void)toggleDoneButton
@@ -461,15 +314,15 @@ NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPicke
                                                         object:sender];
 }
 
-- (void)postDidSeleKITAssetNotification:(id)sender
+- (void)postDidSelectAssetNotification:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:KITAssetsPickerDidSeleKITAssetNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:KITAssetsPickerDidSelectAssetNotification
                                                         object:sender];
 }
 
-- (void)postDidDeseleKITAssetNotification:(id)sender
+- (void)postDidDeselectAssetNotification:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:KITAssetsPickerDidDeseleKITAssetNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:KITAssetsPickerDidDeselectAssetNotification
                                                         object:sender];
 }
 
@@ -504,7 +357,7 @@ NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPicke
     [self.selectedAssets removeObjectAtIndex:index];
 }
 
-- (void)replaceObjectInSelectedAssetsAtIndex:(NSUInteger)index withObject:(PHAsset *)object
+- (void)replaceObjectInSelectedAssetsAtIndex:(NSUInteger)index withObject:(id<KITAssetDataSource> )object
 {
     [self.selectedAssets replaceObjectAtIndex:index withObject:object];
 }
@@ -512,53 +365,31 @@ NSString * const KITAssetsPickerDidDeseleKITAssetNotification = @"KITAssetsPicke
 
 #pragma mark - De/Select asset
 
-- (void)seleKITAsset:(PHAsset *)asset
+- (void)selectAsset:(id<KITAssetDataSource> )asset
 {
     [self insertObject:asset inSelectedAssetsAtIndex:self.countOfSelectedAssets];
-    [self postDidSeleKITAssetNotification:asset];
+    [self postDidSelectAssetNotification:asset];
 }
 
-- (void)deseleKITAsset:(PHAsset *)asset
+- (void)deselectAsset:(id<KITAssetDataSource> )asset
 {
     [self removeObjectFromSelectedAssetsAtIndex:[self.selectedAssets indexOfObject:asset]];
-    [self postDidDeseleKITAssetNotification:asset];
+    [self postDidDeselectAssetNotification:asset];
 }
 
 
 #pragma mark - Selected assets string
 
-- (NSPredicate *)predicateOfMediaType:(PHAssetMediaType)type
-{
-    return [NSPredicate predicateWithBlock:^BOOL(PHAsset *asset, NSDictionary *bindings) {
-        return (asset.mediaType == type);
-    }];
-}
-
 - (NSString *)selectedAssetsString
 {
     if (self.selectedAssets.count == 0)
         return nil;
-    
-    NSPredicate *photoPredicate = [self predicateOfMediaType:PHAssetMediaTypeImage];
-    NSPredicate *videoPredicate = [self predicateOfMediaType:PHAssetMediaTypeVideo];
-    
-    BOOL photoSelected = ([self.selectedAssets filteredArrayUsingPredicate:photoPredicate].count > 0);
-    BOOL videoSelected = ([self.selectedAssets filteredArrayUsingPredicate:videoPredicate].count > 0);
-    
+            
     NSString *format;
     
-    if (photoSelected && videoSelected)
-        format = KITAssetsPickerLocalizedString(@"%@ Items Selected", nil);
-    
-    else if (photoSelected)
-        format = (self.selectedAssets.count > 1) ?
-        KITAssetsPickerLocalizedString(@"%@ Photos Selected", nil) :
-        KITAssetsPickerLocalizedString(@"%@ Photo Selected", nil);
-    
-    else if (videoSelected)
-        format = (self.selectedAssets.count > 1) ?
-        KITAssetsPickerLocalizedString(@"%@ Videos Selected", nil) :
-        KITAssetsPickerLocalizedString(@"%@ Video Selected", nil);
+    format = (self.selectedAssets.count > 1) ?
+    KITAssetsPickerLocalizedString(@"%@ Photos Selected", nil) :
+    KITAssetsPickerLocalizedString(@"%@ Photo Selected", nil);
     
     NSNumberFormatter *nf = [NSNumberFormatter new];
     

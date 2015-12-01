@@ -27,7 +27,6 @@
 #import <PureLayout/PureLayout.h>
 #import "KITAssetScrollView.h"
 #import "KITAssetPlayButton.h"
-#import "PHAsset+KITAssetsPickerController.h"
 #import "NSBundle+KITAssetsPickerController.h"
 #import "UIImage+KITAssetsPickerController.h"
 
@@ -35,18 +34,13 @@
 
 
 NSString * const KITAssetScrollViewDidTapNotification = @"KITAssetScrollViewDidTapNotification";
-NSString * const KITAssetScrollViewPlayerWillPlayNotification = @"KITAssetScrollViewPlayerWillPlayNotification";
-NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrollViewPlayerWillPauseNotification";
-
-
 
 
 @interface KITAssetScrollView ()
 <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) PHAsset *asset;
+@property (nonatomic, strong) id<KITAssetDataSource> asset;
 @property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) AVPlayer *player;
 
 @property (nonatomic, assign) BOOL didLoadPlayerItem;
 
@@ -56,7 +50,6 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
 
 @property (nonatomic, strong) UIProgressView *progressView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
-@property (nonatomic, strong) KITAssetPlayButton *playButton;
 @property (nonatomic, strong) KITAssetSelectionButton *selectionButton;
 
 @property (nonatomic, assign) BOOL shouldUpdateConstraints;
@@ -92,14 +85,6 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
     return self;
 }
 
-- (void)dealloc
-{
-    [self removePlayerNotificationObserver];
-    [self removePlayerLoadedTimeRangesObserver];
-    [self removePlayerRateObserver];
-}
-
-
 #pragma mark - Setup
 
 - (void)setupViews
@@ -119,10 +104,6 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
     [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.activityView = activityView;
     [self addSubview:self.activityView];
-    
-    KITAssetPlayButton *playButton = [KITAssetPlayButton newAutoLayoutView];
-    self.playButton = playButton;
-    [self addSubview:self.playButton];
     
     KITAssetSelectionButton *selectionButton = [KITAssetSelectionButton newAutoLayoutView];
     self.selectionButton = selectionButton;
@@ -181,9 +162,6 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
 
 - (void)updateButtonsConstraints
 {
-    [self.playButton autoAlignAxis:ALAxisVertical toSameAxisOfView:self.superview];
-    [self.playButton autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self.superview];
-    
     [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultLow forConstraints:^{
         [self.selectionButton autoConstrainAttribute:ALAttributeTrailing toAttribute:ALAttributeTrailing ofView:self.superview withOffset:-self.layoutMargins.right relation:NSLayoutRelationEqual];
         [self.selectionButton autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeBottom ofView:self.superview withOffset:-self.layoutMargins.bottom relation:NSLayoutRelationEqual];
@@ -215,18 +193,14 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
 
 - (void)startActivityAnimating
 {
-    [self.playButton setHidden:YES];
     [self.selectionButton setHidden:YES];
     [self.activityView startAnimating];
-    [self postPlayerWillPlayNotification];
 }
 
 - (void)stopActivityAnimating
 {
-    [self.playButton setHidden:NO];
     [self.selectionButton setHidden:NO];
     [self.activityView stopAnimating];
-    [self postPlayerWillPauseNotification];
 }
 
 
@@ -273,63 +247,24 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
 
 #pragma mark - Bind asset image
 
-- (void)bind:(PHAsset *)asset image:(UIImage *)image requestInfo:(NSDictionary *)info
+- (void)bind:(id<KITAssetDataSource> )asset image:(UIImage *)image requestInfo:(NSDictionary *)info
 {
     self.asset = asset;
-    self.imageView.accessibilityLabel = asset.accessibilityLabel;    
-    self.playButton.hidden = [asset KITAssetsPickerIsPhoto];
     
-    BOOL isDegraded = [info[PHImageResultIsDegradedKey] boolValue];
     
-    if (self.image == nil || !isDegraded)
+    if (self.image == nil)
     {
         BOOL zoom = (!self.image);
         self.image = image;
         self.imageView.image = image;
         
-        if (isDegraded)
-            [self mimicProgress];
-        else
-            [self setProgress:1];
-
+        [self setProgress:1];
+        
         [self setNeedsUpdateConstraints];
-        [self updateConstraintsIfNeeded];        
+        [self updateConstraintsIfNeeded];
         [self updateZoomScalesAndZoom:zoom];
     }
 }
-
-
-#pragma mark - Bind player item
-
-- (void)bind:(AVPlayerItem *)playerItem requestInfo:(NSDictionary *)info
-{
-    [self unbindPlayerItem];
-    
-    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-
-    CALayer *layer = self.imageView.layer;
-    [layer addSublayer:playerLayer];
-    [playerLayer setFrame:layer.bounds];
-    
-    self.player = player;
-
-    [self addPlayerNotificationObserver];
-    [self addPlayerLoadedTimeRangesObserver];
-}
-
-- (void)unbindPlayerItem
-{
-    [self removePlayerNotificationObserver];
-    [self removePlayerLoadedTimeRangesObserver];
-
-    for (CALayer *layer in self.imageView.layer.sublayers)
-        [layer removeFromSuperlayer];
-    
-    self.player = nil;
-}
-
 
 
 #pragma mark - Upate zoom scales
@@ -348,17 +283,10 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
     CGFloat minScale = MIN(xScale, yScale);
     CGFloat maxScale = 3.0 * minScale;
     
-    if ([self.asset KITAssetsPickerIsVideo])
-    {
-        self.minimumZoomScale = minScale;
-        self.maximumZoomScale = minScale;
-    }
     
-    else
-    {
-        self.minimumZoomScale = minScale;
-        self.maximumZoomScale = maxScale;
-    }
+    self.minimumZoomScale = minScale;
+    self.maximumZoomScale = maxScale;
+    
     
     // update perspective zoom scale
     self.perspectiveZoomScale = (boundsSize.width > boundsSize.height) ? xScale : yScale;
@@ -537,7 +465,7 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-    return !([touch.view isDescendantOfView:self.playButton] || [touch.view isDescendantOfView:self.selectionButton]);
+    return !([touch.view isDescendantOfView:self.selectionButton]);
 }
 
 
@@ -558,155 +486,6 @@ NSString * const KITAssetScrollViewPlayerWillPauseNotification = @"KITAssetScrol
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
     [center removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-}
-
-
-
-#pragma mark - Video player item key-value observer
-
-- (void)addPlayerLoadedTimeRangesObserver
-{
-    [self.player addObserver:self
-                  forKeyPath:@"currentItem.loadedTimeRanges"
-                     options:NSKeyValueObservingOptionNew
-                     context:nil];
-}
-
-- (void)removePlayerLoadedTimeRangesObserver
-{
-    @try {
-        [self.player removeObserver:self forKeyPath:@"currentItem.loadedTimeRanges"];
-    }
-    @catch (NSException *exception) {
-        // do nothing
-    }
-}
-
-- (void)addPlayerRateObserver
-{
-    [self.player addObserver:self
-                  forKeyPath:@"rate"
-                     options:NSKeyValueObservingOptionNew
-                     context:nil];
-}
-
-- (void)removePlayerRateObserver
-{
-    @try {
-        [self.player removeObserver:self forKeyPath:@"rate"];
-    }
-    @catch (NSException *exception) {
-        // do nothing
-    }    
-}
-
-
-#pragma mark - Video playback Key-Value changed
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if (object == self.player && [keyPath isEqual:@"currentItem.loadedTimeRanges"])
-    {
-        NSArray *timeRanges = [change objectForKey:NSKeyValueChangeNewKey];
-
-        if (timeRanges && [timeRanges count])
-        {
-            CMTimeRange timeRange = [timeRanges.firstObject CMTimeRangeValue];
-            
-            if (CMTIME_COMPARE_INLINE(timeRange.duration, ==, self.player.currentItem.duration))
-                [self performSelector:@selector(playerDidLoadItem:) withObject:object];
-        }
-    }
-    
-    if (object == self.player && [keyPath isEqual:@"rate"])
-    {
-        CGFloat rate = [[change valueForKey:NSKeyValueChangeNewKey] floatValue];
-        
-        if (rate > 0)
-            [self performSelector:@selector(playerDidPlay:) withObject:object];
-        
-        if (rate == 0)
-            [self performSelector:@selector(playerDidPause:) withObject:object];
-    }
-}
-
-
-
-#pragma mark - Notifications
-
-- (void)postPlayerWillPlayNotification
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:KITAssetScrollViewPlayerWillPlayNotification object:nil];
-}
-
-- (void)postPlayerWillPauseNotification
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:KITAssetScrollViewPlayerWillPauseNotification object:nil];
-}
-
-
-#pragma mark - Playback events
-
-- (void)applicationWillResignActive:(NSNotification *)notification
-{
-    [self pauseVideo];
-}
-
-
-- (void)playerDidPlay:(id)sender
-{
-    [self setProgress:1];
-    [self.playButton setHidden:YES];
-    [self.selectionButton setHidden:YES];
-    [self.activityView stopAnimating];
-}
-
-
-- (void)playerDidPause:(id)sender
-{
-    [self.playButton setHidden:NO];
-    [self.selectionButton setHidden:NO];
-}
-
-- (void)playerDidLoadItem:(id)sender
-{
-    if (!self.didLoadPlayerItem)
-    {
-        [self setDidLoadPlayerItem:YES];
-        [self addPlayerRateObserver];
-        
-        [self.activityView stopAnimating];
-        [self playVideo];
-    }
-}
-
-
-#pragma mark - Playback
-
-- (void)playVideo
-{
-    if (self.didLoadPlayerItem)
-    {
-        if (CMTIME_COMPARE_INLINE(self.player.currentTime, == , self.player.currentItem.duration))
-            [self.player seekToTime:kCMTimeZero];
-        
-        [self postPlayerWillPlayNotification];
-        [self.player play];
-    }
-}
-
-- (void)pauseVideo
-{
-    if (self.didLoadPlayerItem)
-    {
-        [self postPlayerWillPauseNotification];
-        [self.player pause];
-    }
-    else
-    {
-        [self stopActivityAnimating];
-        [self unbindPlayerItem];
-    }
 }
 
 

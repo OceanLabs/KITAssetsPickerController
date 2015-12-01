@@ -25,7 +25,6 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
 
 
 @interface KITAssetsGridViewFooter : UICollectionReusableView
@@ -33,6 +32,7 @@
 @property (nonatomic, weak) UIFont *font UI_APPEARANCE_SELECTOR;
 @property (nonatomic, weak) UIColor *textColor UI_APPEARANCE_SELECTOR;
 
-- (void)bind:(PHFetchResult *)result;
+//TODO
+//- (void)bind:(PHFetchResult *)result;
 
 @end

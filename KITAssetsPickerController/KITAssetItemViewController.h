@@ -25,19 +25,15 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
-
+#import "KITAssetDataSource.h"
 
 
 @interface KITAssetItemViewController : UIViewController
 
 @property (nonatomic, assign) BOOL allowsSelection;
-@property (nonatomic, strong, readonly) PHAsset *asset;
+@property (nonatomic, strong, readonly) id<KITAssetDataSource> asset;
 @property (nonatomic, strong, readonly) UIImage *image;
 
-+ (KITAssetItemViewController *)assetItemViewControllerForAsset:(PHAsset *)asset;
-
-- (void)playAsset:(id)sender;
-- (void)pauseAsset:(id)sender;
++ (KITAssetItemViewController *)assetItemViewControllerForAsset:(id<KITAssetDataSource> )asset;
 
 @end
