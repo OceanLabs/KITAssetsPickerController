@@ -65,7 +65,7 @@
     title.font          = [UIFont fontWithDescriptor:descriptor size:size];
     title.textAlignment = NSTextAlignmentCenter;
     title.numberOfLines = 5;
-    title.text          = KITAssetsPickerLocalizedString(@"No Photos or Videos", nil);
+    title.text          = KITAssetsPickerLocalizedString(@"No Photos", nil);
     self.title = title;
     
     UILabel *message        = [UILabel new];
@@ -95,9 +95,9 @@
     NSString *format;
     
     if ([self isCameraDeviceAvailable])
-        format = KITAssetsPickerLocalizedString(@"You can take photos and videos using the camera, or sync photos and videos onto your %@\nusing iTunes.", nil);
+        format = KITAssetsPickerLocalizedString(@"", nil);
     else
-        format = KITAssetsPickerLocalizedString(@"You can sync photos and videos onto your %@ using iTunes.", nil);
+        format = KITAssetsPickerLocalizedString(@"", nil);
     
     return [NSString stringWithFormat:format, self.deviceModel];
 }

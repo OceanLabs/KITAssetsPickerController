@@ -119,16 +119,6 @@
 
 - (UIEdgeInsets)layoutMarginsForAsset:(id<KITAssetDataSource> )asset
 {
-//    if (asset.KITAssetsPickerIsHighFrameRateVideo)
-//        return UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
-//    
-//    else if (asset.KITAssetsPickerIsTimelapseVideo)
-//        return UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
-//    
-//    else if (asset.KITAssetsPickerIsVideo)
-//        return UIEdgeInsetsMake(4.5, 4.5, 4.5, 4.5);
-//    
-//    else
         return UIEdgeInsetsZero;
 }
 

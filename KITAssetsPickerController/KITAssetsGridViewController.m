@@ -375,28 +375,28 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)startCachingThumbnailsForIndexPaths:(NSArray *)indexPaths
 {
-    for (NSIndexPath *indexPath in indexPaths)
-    {
-        id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
-        
-        if (!asset) break;
-        
-        UICollectionViewLayoutAttributes *attributes =
-        [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath];
-    }
+//    for (NSIndexPath *indexPath in indexPaths)
+//    {
+//        id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
+//        
+//        if (!asset) break;
+//        
+//        UICollectionViewLayoutAttributes *attributes =
+//        [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath];
+//    }
 }
 
 - (void)stopCachingThumbnailsForIndexPaths:(NSArray *)indexPaths
 {
-    for (NSIndexPath *indexPath in indexPaths)
-    {
-        id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
-        
-        if (!asset) break;
-
-        UICollectionViewLayoutAttributes *attributes =
-        [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath];
-    }
+//    for (NSIndexPath *indexPath in indexPaths)
+//    {
+//        id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
+//        
+//        if (!asset) break;
+//
+//        UICollectionViewLayoutAttributes *attributes =
+//        [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath];
+//    }
 }
 
 - (void)computeDifferenceBetweenRect:(CGRect)oldRect andRect:(CGRect)newRect removedHandler:(void (^)(CGRect removedRect))removedHandler addedHandler:(void (^)(CGRect addedRect))addedHandler

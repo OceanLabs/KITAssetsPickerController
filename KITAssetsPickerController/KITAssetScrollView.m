@@ -216,7 +216,6 @@ NSString * const KITAssetScrollViewDidTapNotification = @"KITAssetScrollViewDidT
 }
 
 // To mimic image downloading progress
-// as PHImageRequestOptions does not work as expected
 - (void)mimicProgress
 {
     CGFloat progress = self.progressView.progress;
