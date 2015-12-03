@@ -57,7 +57,7 @@
 /**
  *  Initializes a newly created view controller with an array of assets.
  *
- *  @param assets An array of `PHAsset` objects.
+ *  @param assets An array of asset objects.
  *
  *  @return An instance of `KITAssetPageViewController` initialized to show the asset items in `assets`.
  */

@@ -44,28 +44,9 @@
 @property (nonatomic, weak) NSArray <id <KITAssetCollectionDataSource>> *collectionDataSources;
 
 /**
- *  Set the `assetCollectionSubtypes` to specify which asset collections (albums) to be shown in the picker.
- *
- *  You can specify which albums and their order to be shown in the picker by creating an `NSArray` of `NSNumber`
- *  that containing the value of `PHAssetCollectionSubtype`.
- */
-@property (nonatomic, copy) NSArray *assetCollectionSubtypes;
-
-/**
- *  Set the `defaultAssetCollection` to specify which asset collection (album) is the default asset collection.
- *
- *  If the `defaultAssetCollection` is explictly set, the picker initially shows the content of default asset
- *  collection instead of a list of albums. By default, there are no default asset collection.
- *
- *  If there are more than one asset collections that match the subtype value of `defaultAssetCollection`, the
- *  first matched asset collection will be the default asset collection.
- */
-@property (nonatomic, assign) id<KITAssetCollectionDataSource> defaultAssetCollection;
-
-/**
  *  The selected assets.
  *
- *  It contains selected `PHAsset` objects. The order of the objects is the selection order.
+ *  It contains selected asset objects. The order of the objects is the selection order.
  *  
  *  You can use this property to select assets initially when presenting the picker.
  */
@@ -158,8 +139,7 @@
  *  To dismiss the picker, call the `dismissViewControllerAnimated:completion:` method of the presenting controller
  *  responsible for displaying `KITAssetsPickerController` object.
  *
- *  The picked assets are `PHAsset` objects and contain only metadata. The underlying image or video data for any given asset might not be stored on the local device.
- *  You have to use `PHImageManager` object for loading image or video data associated with a `PHAsset`.
+ *  The picked assets are asset objects.
  */
 @protocol KITAssetsPickerControllerDelegate <NSObject>
 
@@ -172,7 +152,7 @@
  *  Tells the delegate that the user finish picking photos or videos.
  *
  *  @param picker The controller object managing the assets picker interface.
- *  @param assets An array containing picked `PHAsset` objects.
+ *  @param assets An array containing picked asset objects.
  *
  *  @see assetsPickerControllerDidCancel:
  */
@@ -336,14 +316,14 @@ extern NSString * const KITAssetsPickerSelectedAssetsDidChangeNotification;
 /**
  *  Sent when asset is selected
  *
- *  The notification’s `object` is a `PHAsset` that is selected
+ *  The notification’s `object` is an asset that is selected
  */
 extern NSString * const KITAssetsPickerDidSelectAssetNotification;
 
 /**
  *  Sent when asset is deselected
  *
- *  The notification’s `object` is a `PHAsset` that is deselected
+ *  The notification’s `object` is an asset that is deselected
  */
 extern NSString * const KITAssetsPickerDidDeselectAssetNotification;
 

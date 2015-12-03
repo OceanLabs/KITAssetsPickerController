@@ -73,7 +73,6 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
         _showsNumberOfAssets                = YES;
         _alwaysEnableDoneButton             = NO;
         _showsSelectionIndex                = NO;
-        _defaultAssetCollection             = nil;
         
         self.preferredContentSize           = KITAssetsPickerPopoverContentSize;
     }

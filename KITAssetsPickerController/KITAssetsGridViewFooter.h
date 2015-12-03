@@ -25,6 +25,7 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "KITAssetCollectionDataSource.h"
 
 
 @interface KITAssetsGridViewFooter : UICollectionReusableView
@@ -32,7 +33,6 @@
 @property (nonatomic, weak) UIFont *font UI_APPEARANCE_SELECTOR;
 @property (nonatomic, weak) UIColor *textColor UI_APPEARANCE_SELECTOR;
 
-//TODO
-//- (void)bind:(PHFetchResult *)result;
+- (void)bind:(id<KITAssetCollectionDataSource>)result;
 
 @end
