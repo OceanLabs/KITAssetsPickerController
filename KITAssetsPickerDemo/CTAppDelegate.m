@@ -25,7 +25,7 @@
  */
 
 #import "CTAppDelegate.h"
-#import "CTMasterViewController.h"
+#import "CTBasicViewController.h"
 
 @interface CTAppDelegate ()
 
@@ -36,7 +36,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    CTMasterViewController *master = [[CTMasterViewController alloc] init];
+    CTBasicViewController *master = [[CTBasicViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:master];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];

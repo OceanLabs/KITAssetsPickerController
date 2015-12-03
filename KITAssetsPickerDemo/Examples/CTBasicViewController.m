@@ -127,18 +127,6 @@
     cell.accessoryType          = UITableViewCellAccessoryDisclosureIndicator;
     cell.clipsToBounds          = YES;
 
-    CGFloat scale = UIScreen.mainScreen.scale;
-    CGSize targetSize = CGSizeMake(tableViewRowHeight * scale, tableViewRowHeight * scale);
-
-//    [manager requestImageForAsset:asset
-//                       targetSize:targetSize
-//                      contentMode:PHImageContentModeAspectFill
-//                          options:self.requestOptions
-//                    resultHandler:^(UIImage *image, NSDictionary *info){
-//                            cell.imageView.image = image;
-//                            [cell setNeedsLayout];
-//                            [cell layoutIfNeeded];
-//                    }];
 
     return cell;
 }

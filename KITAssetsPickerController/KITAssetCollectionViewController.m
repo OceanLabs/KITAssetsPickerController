@@ -327,7 +327,7 @@
 {
     NSUInteger count    = cell.thumbnailStacks.thumbnailViews.count;
     NSArray *assets     = [self posterAssetsFromAssetCollection:collection count:count];
-    CGSize targetSize   = [self.picker imageSizeForContainerSize:self.picker.assetCollectionThumbnailSize];
+//    CGSize targetSize   = [self.picker imageSizeForContainerSize:self.picker.assetCollectionThumbnailSize];
     
     for (NSUInteger index = 0; index < count; index++)
     {

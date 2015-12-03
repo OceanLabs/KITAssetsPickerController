@@ -57,7 +57,7 @@
 
 @implementation KITAssetsPageViewController
 
-- (instancetype)initWithCollection:(id<KITAssetCollectionDataSource>)collection
+- (instancetype)initWithCollection:(id<NSFastEnumeration>)collection
 {
     NSMutableArray *assets = [NSMutableArray new];
     

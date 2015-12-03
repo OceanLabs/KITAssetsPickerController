@@ -48,11 +48,11 @@
 /**
  *  Initializes a newly created view controller with a fetech result.
  *
- *  @param fetchResult A fetch result of `PHAsset` objects.
+ *  @param collection A collection of assets.
  *
  *  @return An instance of `KITAssetPageViewController` initialized to show the asset items in `fetchResult`.
  */
-- (instancetype)initWithCollection:(id<KITAssetCollectionDataSource> )collection;
+- (instancetype)initWithCollection:(id<NSFastEnumeration> )collection;
 
 /**
  *  Initializes a newly created view controller with an array of assets.

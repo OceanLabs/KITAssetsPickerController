@@ -11,26 +11,12 @@
 		2ED8B9DB1BEA444B0003001A /* CTAssetCollectionDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8B9DA1BEA444B0003001A /* CTAssetCollectionDataSource.m */; };
 		363F8D0A685BF86C60D06D49 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B2FBB7FD634FB543BB7BB6 /* Pods.framework */; };
 		AD0786D91B428313003C8863 /* CTBasicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0786D81B428313003C8863 /* CTBasicViewController.m */; };
-		AD0786DF1B42864F003C8863 /* CTSelectedAssetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0786DE1B42864F003C8863 /* CTSelectedAssetsViewController.m */; };
-		AD0786E21B428A73003C8863 /* CTDefaultAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0786E11B428A73003C8863 /* CTDefaultAlbumViewController.m */; };
-		AD18AFD71BCC9BA9008B507D /* CTSelectionOrderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD18AFD61BCC9BA9008B507D /* CTSelectionOrderViewController.m */; };
-		AD4B06C81B428EEF00D99C5A /* CTiCloudAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD4B06C71B428EEF00D99C5A /* CTiCloudAlbumsViewController.m */; };
-		AD4B06CB1B44CD5A00D99C5A /* CTSortedAssetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD4B06CA1B44CD5A00D99C5A /* CTSortedAssetsViewController.m */; };
 		AD6CDA4A1AC55BEE008C6AC2 /* UICollectionView+KITAssetsPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6CDA491AC55BEE008C6AC2 /* UICollectionView+KITAssetsPickerController.m */; };
-		ADA073041B45118F009FB7C7 /* CTMaxSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA073031B45118F009FB7C7 /* CTMaxSelectionViewController.m */; };
-		ADA073071B4515AF009FB7C7 /* CTPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA073061B4515AF009FB7C7 /* CTPhotosViewController.m */; };
-		ADA0730A1B451E11009FB7C7 /* CTSloMoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA073091B451E11009FB7C7 /* CTSloMoViewController.m */; };
-		ADA0730D1B4625AA009FB7C7 /* CTUITweaksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA0730C1B4625AA009FB7C7 /* CTUITweaksViewController.m */; };
-		ADA073101B462C98009FB7C7 /* CTLastWeekViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA0730F1B462C98009FB7C7 /* CTLastWeekViewController.m */; };
 		ADD965CC1AAD4C49002A26A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD965CB1AAD4C49002A26A2 /* main.m */; };
 		ADD965CF1AAD4C49002A26A2 /* CTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD965CE1AAD4C49002A26A2 /* CTAppDelegate.m */; };
-		ADD965D21AAD4C49002A26A2 /* CTMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD965D11AAD4C49002A26A2 /* CTMasterViewController.m */; };
 		ADD965DA1AAD4C4A002A26A2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADD965D91AAD4C49002A26A2 /* Images.xcassets */; };
 		ADD965DD1AAD4C4A002A26A2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADD965DB1AAD4C4A002A26A2 /* LaunchScreen.xib */; };
 		ADE2713C1ACBA6BA0090EFB1 /* NSIndexSet+KITAssetsPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE2713B1ACBA6BA0090EFB1 /* NSIndexSet+KITAssetsPickerController.m */; };
-		ADFC004C1B54FF740024CBB9 /* CTLayoutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFC004B1B54FF740024CBB9 /* CTLayoutViewController.m */; };
-		ADFE23881B46602400E44353 /* CTProgrammaticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFE23871B46602400E44353 /* CTProgrammaticViewController.m */; };
-		ADFE238B1B46868100E44353 /* CTApperanceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFE238A1B46868100E44353 /* CTApperanceViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,26 +52,16 @@
 		AD0786C61B423B16003C8863 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		AD0786D71B428313003C8863 /* CTBasicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTBasicViewController.h; sourceTree = "<group>"; };
 		AD0786D81B428313003C8863 /* CTBasicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTBasicViewController.m; sourceTree = "<group>"; };
-		AD0786DD1B42864F003C8863 /* CTSelectedAssetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTSelectedAssetsViewController.h; sourceTree = "<group>"; };
-		AD0786DE1B42864F003C8863 /* CTSelectedAssetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTSelectedAssetsViewController.m; sourceTree = "<group>"; };
-		AD0786E01B428A73003C8863 /* CTDefaultAlbumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTDefaultAlbumViewController.h; sourceTree = "<group>"; };
-		AD0786E11B428A73003C8863 /* CTDefaultAlbumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTDefaultAlbumViewController.m; sourceTree = "<group>"; };
 		AD08405F1ACD3F07003347CC /* KITAssetsPickerNoAssetsView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KITAssetsPickerNoAssetsView.h; sourceTree = "<group>"; };
 		AD0840601ACD3F07003347CC /* KITAssetsPickerNoAssetsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KITAssetsPickerNoAssetsView.m; sourceTree = "<group>"; };
 		AD18AFD11BCB9025008B507D /* KITAssetsPageViewController+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KITAssetsPageViewController+Internal.h"; sourceTree = "<group>"; };
 		AD18AFD21BCBB856008B507D /* KITAssetsGridSelectedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KITAssetsGridSelectedView.h; sourceTree = "<group>"; };
 		AD18AFD31BCBB856008B507D /* KITAssetsGridSelectedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KITAssetsGridSelectedView.m; sourceTree = "<group>"; };
-		AD18AFD51BCC9BA9008B507D /* CTSelectionOrderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTSelectionOrderViewController.h; sourceTree = "<group>"; };
-		AD18AFD61BCC9BA9008B507D /* CTSelectionOrderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTSelectionOrderViewController.m; sourceTree = "<group>"; };
 		AD30D7F61AAE9D0400C79E3D /* NSNumberFormatter+KITAssetsPickerController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSNumberFormatter+KITAssetsPickerController.h"; sourceTree = "<group>"; };
 		AD30D7F71AAE9D0400C79E3D /* NSNumberFormatter+KITAssetsPickerController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSNumberFormatter+KITAssetsPickerController.m"; sourceTree = "<group>"; };
 		AD30D7FB1AAEE01800C79E3D /* KITAssetThumbnailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KITAssetThumbnailView.h; sourceTree = "<group>"; };
 		AD30D7FC1AAEE01800C79E3D /* KITAssetThumbnailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KITAssetThumbnailView.m; sourceTree = "<group>"; };
 		AD30D7FF1AAEE8DC00C79E3D /* KITAssetsPickerController+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KITAssetsPickerController+Internal.h"; sourceTree = "<group>"; };
-		AD4B06C61B428EEF00D99C5A /* CTiCloudAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTiCloudAlbumsViewController.h; sourceTree = "<group>"; };
-		AD4B06C71B428EEF00D99C5A /* CTiCloudAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTiCloudAlbumsViewController.m; sourceTree = "<group>"; };
-		AD4B06C91B44CD5A00D99C5A /* CTSortedAssetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTSortedAssetsViewController.h; sourceTree = "<group>"; };
-		AD4B06CA1B44CD5A00D99C5A /* CTSortedAssetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTSortedAssetsViewController.m; sourceTree = "<group>"; };
 		AD4CC0CB1AD61E0D009C3F45 /* KITAssetsGridViewLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KITAssetsGridViewLayout.h; sourceTree = "<group>"; };
 		AD4CC0CC1AD61E0D009C3F45 /* KITAssetsGridViewLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KITAssetsGridViewLayout.m; sourceTree = "<group>"; };
 		AD60C0FD1AB67D3A00F3C675 /* KITAssetThumbnailOverlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KITAssetThumbnailOverlay.h; sourceTree = "<group>"; };
@@ -98,16 +74,6 @@
 		AD7B28F61BCE2C88001EC414 /* KITAssetsPageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KITAssetsPageView.m; sourceTree = "<group>"; };
 		AD9BB2481B295EE2001F9809 /* KITAssetCheckmark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KITAssetCheckmark.h; sourceTree = "<group>"; };
 		AD9BB2491B295EE2001F9809 /* KITAssetCheckmark.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = KITAssetCheckmark.m; sourceTree = "<group>"; };
-		ADA073021B45118F009FB7C7 /* CTMaxSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTMaxSelectionViewController.h; sourceTree = "<group>"; };
-		ADA073031B45118F009FB7C7 /* CTMaxSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTMaxSelectionViewController.m; sourceTree = "<group>"; };
-		ADA073051B4515AF009FB7C7 /* CTPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPhotosViewController.h; sourceTree = "<group>"; };
-		ADA073061B4515AF009FB7C7 /* CTPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPhotosViewController.m; sourceTree = "<group>"; };
-		ADA073081B451E11009FB7C7 /* CTSloMoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTSloMoViewController.h; sourceTree = "<group>"; };
-		ADA073091B451E11009FB7C7 /* CTSloMoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTSloMoViewController.m; sourceTree = "<group>"; };
-		ADA0730B1B4625AA009FB7C7 /* CTUITweaksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTUITweaksViewController.h; sourceTree = "<group>"; };
-		ADA0730C1B4625AA009FB7C7 /* CTUITweaksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTUITweaksViewController.m; sourceTree = "<group>"; };
-		ADA0730E1B462C98009FB7C7 /* CTLastWeekViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTLastWeekViewController.h; sourceTree = "<group>"; };
-		ADA0730F1B462C98009FB7C7 /* CTLastWeekViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTLastWeekViewController.m; sourceTree = "<group>"; };
 		ADB628801B258708005E9932 /* KITAssetPlayButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KITAssetPlayButton.h; sourceTree = "<group>"; };
 		ADB628811B258708005E9932 /* KITAssetPlayButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = KITAssetPlayButton.m; sourceTree = "<group>"; };
 		ADC0FAD81BB5015800C049EE /* KITAssetSelectionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KITAssetSelectionButton.h; sourceTree = "<group>"; };
@@ -117,8 +83,6 @@
 		ADD965CB1AAD4C49002A26A2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		ADD965CD1AAD4C49002A26A2 /* CTAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTAppDelegate.h; sourceTree = "<group>"; };
 		ADD965CE1AAD4C49002A26A2 /* CTAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CTAppDelegate.m; sourceTree = "<group>"; };
-		ADD965D01AAD4C49002A26A2 /* CTMasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTMasterViewController.h; sourceTree = "<group>"; };
-		ADD965D11AAD4C49002A26A2 /* CTMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CTMasterViewController.m; sourceTree = "<group>"; };
 		ADD965D91AAD4C49002A26A2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		ADD965DC1AAD4C4A002A26A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		ADD965FC1AAD5780002A26A2 /* NSBundle+KITAssetsPickerController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBundle+KITAssetsPickerController.h"; sourceTree = "<group>"; };
@@ -171,12 +135,6 @@
 		ADE2713B1ACBA6BA0090EFB1 /* NSIndexSet+KITAssetsPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+KITAssetsPickerController.m"; sourceTree = "<group>"; };
 		ADE2713D1ACD1D6D0090EFB1 /* KITAssetsPickerAccessDeniedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KITAssetsPickerAccessDeniedView.h; sourceTree = "<group>"; };
 		ADE2713E1ACD1D6D0090EFB1 /* KITAssetsPickerAccessDeniedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KITAssetsPickerAccessDeniedView.m; sourceTree = "<group>"; };
-		ADFC004A1B54FF740024CBB9 /* CTLayoutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTLayoutViewController.h; sourceTree = "<group>"; };
-		ADFC004B1B54FF740024CBB9 /* CTLayoutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTLayoutViewController.m; sourceTree = "<group>"; };
-		ADFE23861B46602400E44353 /* CTProgrammaticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTProgrammaticViewController.h; sourceTree = "<group>"; };
-		ADFE23871B46602400E44353 /* CTProgrammaticViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTProgrammaticViewController.m; sourceTree = "<group>"; };
-		ADFE23891B46868100E44353 /* CTApperanceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTApperanceViewController.h; sourceTree = "<group>"; };
-		ADFE238A1B46868100E44353 /* CTApperanceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTApperanceViewController.m; sourceTree = "<group>"; };
 		F1B2FBB7FD634FB543BB7BB6 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD69CDFBA7D07D903CCC8B80 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -207,32 +165,6 @@
 			children = (
 				AD0786D71B428313003C8863 /* CTBasicViewController.h */,
 				AD0786D81B428313003C8863 /* CTBasicViewController.m */,
-				ADA073021B45118F009FB7C7 /* CTMaxSelectionViewController.h */,
-				ADA073031B45118F009FB7C7 /* CTMaxSelectionViewController.m */,
-				AD0786DD1B42864F003C8863 /* CTSelectedAssetsViewController.h */,
-				AD0786DE1B42864F003C8863 /* CTSelectedAssetsViewController.m */,
-				AD0786E01B428A73003C8863 /* CTDefaultAlbumViewController.h */,
-				AD0786E11B428A73003C8863 /* CTDefaultAlbumViewController.m */,
-				AD18AFD51BCC9BA9008B507D /* CTSelectionOrderViewController.h */,
-				AD18AFD61BCC9BA9008B507D /* CTSelectionOrderViewController.m */,
-				ADA0730B1B4625AA009FB7C7 /* CTUITweaksViewController.h */,
-				ADA0730C1B4625AA009FB7C7 /* CTUITweaksViewController.m */,
-				AD4B06C91B44CD5A00D99C5A /* CTSortedAssetsViewController.h */,
-				AD4B06CA1B44CD5A00D99C5A /* CTSortedAssetsViewController.m */,
-				ADA073051B4515AF009FB7C7 /* CTPhotosViewController.h */,
-				ADA073061B4515AF009FB7C7 /* CTPhotosViewController.m */,
-				ADA0730E1B462C98009FB7C7 /* CTLastWeekViewController.h */,
-				ADA0730F1B462C98009FB7C7 /* CTLastWeekViewController.m */,
-				ADA073081B451E11009FB7C7 /* CTSloMoViewController.h */,
-				ADA073091B451E11009FB7C7 /* CTSloMoViewController.m */,
-				AD4B06C61B428EEF00D99C5A /* CTiCloudAlbumsViewController.h */,
-				AD4B06C71B428EEF00D99C5A /* CTiCloudAlbumsViewController.m */,
-				ADFE23861B46602400E44353 /* CTProgrammaticViewController.h */,
-				ADFE23871B46602400E44353 /* CTProgrammaticViewController.m */,
-				ADFE23891B46868100E44353 /* CTApperanceViewController.h */,
-				ADFE238A1B46868100E44353 /* CTApperanceViewController.m */,
-				ADFC004A1B54FF740024CBB9 /* CTLayoutViewController.h */,
-				ADFC004B1B54FF740024CBB9 /* CTLayoutViewController.m */,
 			);
 			path = Examples;
 			sourceTree = "<group>";
@@ -261,8 +193,6 @@
 			children = (
 				ADD965CD1AAD4C49002A26A2 /* CTAppDelegate.h */,
 				ADD965CE1AAD4C49002A26A2 /* CTAppDelegate.m */,
-				ADD965D01AAD4C49002A26A2 /* CTMasterViewController.h */,
-				ADD965D11AAD4C49002A26A2 /* CTMasterViewController.m */,
 				2E0163031BEA2D7C00022570 /* CTAssetDataSource.h */,
 				2E0163041BEA2D7C00022570 /* CTAssetDataSource.m */,
 				2ED8B9D91BEA444B0003001A /* CTAssetCollectionDataSource.h */,
@@ -518,25 +448,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADD965CF1AAD4C49002A26A2 /* CTAppDelegate.m in Sources */,
-				ADD965D21AAD4C49002A26A2 /* CTMasterViewController.m in Sources */,
-				ADA073071B4515AF009FB7C7 /* CTPhotosViewController.m in Sources */,
 				AD6CDA4A1AC55BEE008C6AC2 /* UICollectionView+KITAssetsPickerController.m in Sources */,
 				2E0163051BEA2D7C00022570 /* CTAssetDataSource.m in Sources */,
 				ADD965CC1AAD4C49002A26A2 /* main.m in Sources */,
-				ADFE23881B46602400E44353 /* CTProgrammaticViewController.m in Sources */,
-				ADA0730A1B451E11009FB7C7 /* CTSloMoViewController.m in Sources */,
-				ADFC004C1B54FF740024CBB9 /* CTLayoutViewController.m in Sources */,
 				2ED8B9DB1BEA444B0003001A /* CTAssetCollectionDataSource.m in Sources */,
-				AD0786DF1B42864F003C8863 /* CTSelectedAssetsViewController.m in Sources */,
-				ADA073041B45118F009FB7C7 /* CTMaxSelectionViewController.m in Sources */,
-				AD4B06CB1B44CD5A00D99C5A /* CTSortedAssetsViewController.m in Sources */,
-				ADA073101B462C98009FB7C7 /* CTLastWeekViewController.m in Sources */,
-				AD4B06C81B428EEF00D99C5A /* CTiCloudAlbumsViewController.m in Sources */,
-				AD0786E21B428A73003C8863 /* CTDefaultAlbumViewController.m in Sources */,
 				AD0786D91B428313003C8863 /* CTBasicViewController.m in Sources */,
-				ADA0730D1B4625AA009FB7C7 /* CTUITweaksViewController.m in Sources */,
-				AD18AFD71BCC9BA9008B507D /* CTSelectionOrderViewController.m in Sources */,
-				ADFE238B1B46868100E44353 /* CTApperanceViewController.m in Sources */,
 				ADE2713C1ACBA6BA0090EFB1 /* NSIndexSet+KITAssetsPickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
