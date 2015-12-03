@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "KITAssetCollectionDataSource.h"
 
-@interface CTAssetCollectionDataSource : NSObject <KITAssetCollectionDataSource>
+@interface AssetCollectionDataSource : NSObject <KITAssetCollectionDataSource>
 
 - (NSUInteger)count;
 - (id)objectAtIndex:(NSUInteger)index;

@@ -24,11 +24,11 @@
  
  */
 
-#import "CTBasicViewController.h"
+#import "ViewController.h"
 
 #define tableViewRowHeight 80.0f
 
-@implementation CTBasicViewController
+@implementation ViewController
 
 - (void)viewDidLoad
 {
@@ -57,7 +57,7 @@
     
     // init properties
     self.assets = @[];
-    self.collections = @[[[CTAssetCollectionDataSource alloc] init]];
+    self.collections = @[[[AssetCollectionDataSource alloc] init]];
 
     self.dateFormatter = [[NSDateFormatter alloc] init];
     self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;

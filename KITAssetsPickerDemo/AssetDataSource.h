@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "KITAssetDataSource.h"
 
-@interface CTAssetDataSource : NSObject <KITAssetDataSource>
+@interface AssetDataSource : NSObject <KITAssetDataSource>
 
 @end

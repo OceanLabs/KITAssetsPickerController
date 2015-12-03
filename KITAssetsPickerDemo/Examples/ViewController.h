@@ -25,11 +25,17 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <KITAssetsPickerController/KITAssetsPickerController.h>
+#import <KITAssetsPickerController/KITAssetsPageViewController.h>
 
-@interface CTAppDelegate : UIResponder <UIApplicationDelegate>
+#import "AssetCollectionDataSource.h"
 
-@property (strong, nonatomic) UIWindow *window;
+@interface ViewController : UITableViewController
+<KITAssetsPickerControllerDelegate>
+
+@property (nonatomic, strong) NSArray *assets;
+@property (strong, nonatomic) NSArray *collections;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
 
 @end
-

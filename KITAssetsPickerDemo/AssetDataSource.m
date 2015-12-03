@@ -6,9 +6,9 @@
 //  Copyright © 2015 Clement T. All rights reserved.
 //
 
-#import "CTAssetDataSource.h"
+#import "AssetDataSource.h"
 
-@implementation CTAssetDataSource
+@implementation AssetDataSource
 
 - (void)dataLengthWithCompletionHandler:(void (^)(long long, NSError *))handler{
     handler(UIImageJPEGRepresentation([UIImage imageNamed:@"1"], 0.7).length, nil);
