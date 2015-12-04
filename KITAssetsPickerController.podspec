@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   spec.social_media_url      = 'https://twitter.com/kkarayannis'
   spec.platform              = :ios, '8.0'
   spec.ios.deployment_target = '8.0'
-  spec.source                = { :git => 'https://github.com/Oceanlabs/KITAssetsPickerController.git', :tag => 'v1.0.0' }
+  spec.source                = { :git => 'https://github.com/Oceanlabs/KITAssetsPickerController.git', :tag => '1.0.0' }
   spec.public_header_files   = 'KITAssetsPickerController/*.h'
   spec.source_files          = 'KITAssetsPickerController/**/*.{h,m}'
   spec.resource_bundles      = { 'KITAssetsPickerController' => ['KITAssetsPickerController/Resources/KITAssetsPicker.xcassets/*/*.png', 'KITAssetsPickerController/Resources/*.lproj'] }
