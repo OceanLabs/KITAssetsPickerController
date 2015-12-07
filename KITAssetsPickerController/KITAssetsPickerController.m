@@ -140,7 +140,7 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
 - (void)setupSplitViewController
 {
     UIViewController *vc;
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >=8){
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >=8 && self.collectionDataSources.count > 1){
         
         vc = [KITAssetCollectionViewController new];
     }
@@ -160,7 +160,7 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
     [self addChildViewController:master];
     [master didMoveToParentViewController:self];
     
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >=8){
+    if ([vc respondsToSelector:@selector(reloadUserInterface)]){
         [(KITAssetCollectionViewController *)vc reloadUserInterface];
     }
 }
