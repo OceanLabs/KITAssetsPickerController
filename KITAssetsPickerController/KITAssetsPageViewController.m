@@ -100,6 +100,10 @@
 
 - (BOOL)prefersStatusBarHidden
 {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8){
+        return NO;
+    }
+
     if (self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact)
         return YES;
     else

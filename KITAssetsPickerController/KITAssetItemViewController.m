@@ -109,7 +109,7 @@
 
 - (KITAssetsPickerController *)picker
 {
-    return (KITAssetsPickerController *)self.splitViewController.parentViewController;
+    return (KITAssetsPickerController *)self.navigationController.parentViewController;
 }
 
 

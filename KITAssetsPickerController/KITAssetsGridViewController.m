@@ -145,7 +145,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (KITAssetsPickerController *)picker
 {
-    return (KITAssetsPickerController *)self.splitViewController.parentViewController;
+    return (KITAssetsPickerController *)self.navigationController.parentViewController;
 }
 
 - (id<KITAssetDataSource> )assetAtIndexPath:(NSIndexPath *)indexPath
@@ -185,21 +185,23 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)updateCollectionViewLayout
 {
-    UITraitCollection *trait = self.traitCollection;
-    CGSize contentSize = self.view.bounds.size;
-    UICollectionViewLayout *layout;
-
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:collectionViewLayoutForContentSize:traitCollection:)]) {
-        layout = [self.picker.delegate assetsPickerController:self.picker collectionViewLayoutForContentSize:contentSize traitCollection:trait];
-    } else {
-        layout = [[KITAssetsGridViewLayout alloc] initWithContentSize:contentSize traitCollection:trait];
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8){
+        UITraitCollection *trait = self.traitCollection;
+        CGSize contentSize = self.view.bounds.size;
+        UICollectionViewLayout *layout;
+        
+        if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:collectionViewLayoutForContentSize:traitCollection:)]) {
+            layout = [self.picker.delegate assetsPickerController:self.picker collectionViewLayoutForContentSize:contentSize traitCollection:trait];
+        } else {
+            layout = [[KITAssetsGridViewLayout alloc] initWithContentSize:contentSize traitCollection:trait];
+        }
+        
+        __weak KITAssetsGridViewController *weakSelf = self;
+        
+        [self.collectionView setCollectionViewLayout:layout animated:NO completion:^(BOOL finished){
+            [weakSelf.collectionView reloadItemsAtIndexPaths:[weakSelf.collectionView indexPathsForVisibleItems]];
+        }];
     }
-    
-    __weak KITAssetsGridViewController *weakSelf = self;
-    
-    [self.collectionView setCollectionViewLayout:layout animated:NO completion:^(BOOL finished){
-        [weakSelf.collectionView reloadItemsAtIndexPaths:[weakSelf.collectionView indexPathsForVisibleItems]];
-    }];
 }
 
 

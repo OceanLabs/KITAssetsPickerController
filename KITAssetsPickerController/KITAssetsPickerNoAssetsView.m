@@ -110,8 +110,8 @@
     if (!self.didSetupConstraints)
     {
         [self autoCenterInSuperview];
-        [self autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-        [self autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+        [self autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+        [self autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
         
         [self.title autoAlignAxisToSuperviewAxis:ALAxisVertical];
         [self.title autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];

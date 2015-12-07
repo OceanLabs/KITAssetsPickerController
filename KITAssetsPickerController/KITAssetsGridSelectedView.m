@@ -166,7 +166,7 @@
     if (!self.didSetupConstraints)
     {
         [NSLayoutConstraint autoSetPriority:UILayoutPriorityRequired forConstraints:^{
-            CGFloat height = self.selectionIndexLabel.font.pointSize + self.layoutMargins.top;
+            CGFloat height = self.selectionIndexLabel.font.pointSize + 8;
             [self.selectionIndexLabel autoSetDimension:ALDimensionHeight toSize:height];
             [self.selectionIndexLabel autoConstrainAttribute:ALAttributeWidth toAttribute:ALAttributeHeight ofView:self.selectionIndexLabel];
         }];

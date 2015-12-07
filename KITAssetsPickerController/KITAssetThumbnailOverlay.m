@@ -79,7 +79,7 @@
     duration.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
     duration.textColor = [UIColor whiteColor];
     duration.lineBreakMode = NSLineBreakByTruncatingTail;
-    duration.layoutMargins = UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
+//    duration.layoutMargins = UIEdgeInsetsMake(2.5, 2.5, 2.5, 2.5);
     self.duration = duration;
     
     [self addSubview:self.duration];
@@ -93,10 +93,10 @@
     {
         [self.gradient autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
         [self.gradient autoSetDimension:ALDimensionHeight toSize:self.gradient.image.size.height];
-        [self.badge autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:self.badge.layoutMargins.left];
-        [self.badge autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:self.badge.layoutMargins.bottom];
-        [self.duration autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:self.duration.layoutMargins.right];
-        [self.duration autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:self.duration.layoutMargins.bottom];
+        [self.badge autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:8];
+        [self.badge autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:8];
+        [self.duration autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:8];
+        [self.duration autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:8];
         
         
         self.didSetupConstraints = YES;
@@ -110,7 +110,7 @@
 
 - (void)bind:(id<KITAssetDataSource> )asset duration:(NSString *)duration;
 {
-    self.badge.layoutMargins = [self layoutMarginsForAsset:asset];
+//    self.badge.layoutMargins = [self layoutMarginsForAsset:asset];
     self.duration.text = duration;
     
     [self setNeedsUpdateConstraints];
@@ -127,7 +127,7 @@
 
 - (void)bind:(id<KITAssetCollectionDataSource>)assetCollection;
 {
-    self.badge.layoutMargins = [self layoutMarginsForAssetCollection:assetCollection];
+//    self.badge.layoutMargins = [self layoutMarginsForAssetCollection:assetCollection];
     self.duration.text = nil;
     
     [self setNeedsUpdateConstraints];

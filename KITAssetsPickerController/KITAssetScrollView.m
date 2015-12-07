@@ -163,13 +163,13 @@ NSString * const KITAssetScrollViewDidTapNotification = @"KITAssetScrollViewDidT
 - (void)updateButtonsConstraints
 {
     [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultLow forConstraints:^{
-        [self.selectionButton autoConstrainAttribute:ALAttributeTrailing toAttribute:ALAttributeTrailing ofView:self.superview withOffset:-self.layoutMargins.right relation:NSLayoutRelationEqual];
-        [self.selectionButton autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeBottom ofView:self.superview withOffset:-self.layoutMargins.bottom relation:NSLayoutRelationEqual];
+        [self.selectionButton autoConstrainAttribute:ALAttributeTrailing toAttribute:ALAttributeTrailing ofView:self.superview withOffset:-8 relation:NSLayoutRelationEqual];
+        [self.selectionButton autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeBottom ofView:self.superview withOffset:-8 relation:NSLayoutRelationEqual];
     }];
     
     [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
-        [self.selectionButton autoConstrainAttribute:ALAttributeTrailing toAttribute:ALAttributeTrailing ofView:self.imageView withOffset:-self.layoutMargins.right relation:NSLayoutRelationLessThanOrEqual];
-        [self.selectionButton autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeBottom ofView:self.imageView withOffset:-self.layoutMargins.bottom relation:NSLayoutRelationLessThanOrEqual];
+        [self.selectionButton autoConstrainAttribute:ALAttributeTrailing toAttribute:ALAttributeTrailing ofView:self.imageView withOffset:-8 relation:NSLayoutRelationLessThanOrEqual];
+        [self.selectionButton autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeBottom ofView:self.imageView withOffset:-8 relation:NSLayoutRelationLessThanOrEqual];
     }];
 }
 

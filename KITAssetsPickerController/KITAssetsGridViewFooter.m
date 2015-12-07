@@ -104,7 +104,7 @@
 {
     if (!self.didSetupConstraints)
     {
-        [self.label autoPinEdgesToSuperviewMargins];
+        [self.label autoPinEdgesToSuperviewEdges];
         
         self.didSetupConstraints = YES;
     }

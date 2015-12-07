@@ -96,13 +96,6 @@
  */
 @property (nonatomic, assign) BOOL showsSelectionIndex;
 
-/**
- *  The split view controller of the picker hierarchy. (read-only)
- *
- *  This property contains the child split view controller of the picker.
- */
-@property (nonatomic, readonly, strong) UISplitViewController *childSplitViewController;
-
 
 /**
  *  @name Managing Selections

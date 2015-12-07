@@ -14,8 +14,8 @@ Pod::Spec.new do |spec|
   spec.license               = { :type => 'MIT', :file => 'LICENSE' }
   spec.author                = { 'Kostas Karayannis' => 'kkarayannis@gmail.com' }
   spec.social_media_url      = 'https://twitter.com/kkarayannis'
-  spec.platform              = :ios, '8.0'
-  spec.ios.deployment_target = '8.0'
+  spec.platform              = :ios, '7.0'
+  spec.ios.deployment_target = '7.0'
   spec.source                = { :git => 'https://github.com/Oceanlabs/KITAssetsPickerController.git', :tag => '1.0.0' }
   spec.public_header_files   = 'KITAssetsPickerController/*.h'
   spec.source_files          = 'KITAssetsPickerController/**/*.{h,m}'

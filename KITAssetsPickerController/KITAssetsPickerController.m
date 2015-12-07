@@ -48,7 +48,7 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
 
 
 @interface KITAssetsPickerController ()
-<UISplitViewControllerDelegate, UINavigationControllerDelegate>
+<UINavigationControllerDelegate>
 
 @property (nonatomic, assign) BOOL shouldCollapseDetailViewController;
 
@@ -96,12 +96,12 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
 
 - (UIViewController *)childViewControllerForStatusBarStyle
 {
-    return self.childSplitViewController.viewControllers.firstObject;
+    return self.navigationController.viewControllers.firstObject;
 }
 
 - (UIViewController *)childViewControllerForStatusBarHidden
 {
-    UIViewController *vc = self.childSplitViewController.viewControllers.lastObject;
+    UIViewController *vc = self.navigationController.viewControllers.lastObject;
     
     if ([vc isMemberOfClass:[UINavigationController class]])
         return ((UINavigationController *)vc).topViewController;
@@ -139,27 +139,30 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
 
 - (void)setupSplitViewController
 {
-    KITAssetCollectionViewController *vc = [KITAssetCollectionViewController new];
+    UIViewController *vc;
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >=8){
+        
+        vc = [KITAssetCollectionViewController new];
+    }
+    else{
+        vc = [KITAssetsGridViewController new];
+        ((KITAssetsGridViewController *)vc).assetCollection = self.collectionDataSources.firstObject;
+    }
+    
     UINavigationController *master = [[UINavigationController alloc] initWithRootViewController:vc];
-    UINavigationController *detail = [self emptyNavigationController];
-    UISplitViewController *svc  = [UISplitViewController new];
     
     master.interactivePopGestureRecognizer.enabled  = YES;
     master.interactivePopGestureRecognizer.delegate = nil;
     
-    svc.delegate = self;
-    svc.viewControllers = @[master, detail];
-    svc.presentsWithGesture = NO;
-    svc.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
+    [master willMoveToParentViewController:self];
+    [master.view setFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    [self.view addSubview:master.view];
+    [self addChildViewController:master];
+    [master didMoveToParentViewController:self];
     
-    [svc willMoveToParentViewController:self];
-    [svc setViewControllers:@[master, detail]];
-    [svc.view setFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:svc.view];
-    [self addChildViewController:svc];
-    [svc didMoveToParentViewController:self];
-
-    [vc reloadUserInterface];
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >=8){
+        [(KITAssetCollectionViewController *)vc reloadUserInterface];
+    }
 }
 
 - (void)setupChildViewController:(UIViewController *)vc
@@ -293,7 +296,7 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
 
 - (void)toggleDoneButton
 {
-    UIViewController *vc = self.childSplitViewController.viewControllers.firstObject;
+    UIViewController *vc = self.childNavigationViewController.viewControllers.firstObject;
     
     if ([vc isMemberOfClass:[UINavigationController class]])
     {
@@ -328,9 +331,9 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
 
 #pragma mark - Accessors
 
-- (UISplitViewController *)childSplitViewController
+- (UINavigationController *)childNavigationViewController
 {
-    return (UISplitViewController *)self.childViewControllers.firstObject;
+    return (UINavigationController *)self.childViewControllers.firstObject;
 }
 
 
@@ -405,12 +408,6 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
 }
 
 
-#pragma mark - Split view controller delegate
-
-- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController
-{
-    return self.shouldCollapseDetailViewController;
-}
 
 
 #pragma mark - Navigation controller delegate

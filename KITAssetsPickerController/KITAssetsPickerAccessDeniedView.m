@@ -101,8 +101,8 @@
     if (!self.didSetupConstraints)
     {
         [self autoCenterInSuperview];
-        [self autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-        [self autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+        [self autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+        [self autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
 
         [self.padlock autoAlignAxisToSuperviewAxis:ALAxisVertical];
         [self.padlock autoPinEdgeToSuperviewEdge:ALEdgeTop];

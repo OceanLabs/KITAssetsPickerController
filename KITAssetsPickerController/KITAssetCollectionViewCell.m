@@ -248,22 +248,22 @@
         }];
                 
         [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
-            [self.thumbnailStacks autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeTrailing];
+            [self.thumbnailStacks autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTrailing];
         }];
         
         [self.labelsView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [self.labelsView autoPinEdge:ALEdgeLeading
                               toEdge:ALEdgeTrailing
                               ofView:self.thumbnailStacks
-                          withOffset:self.labelsView.layoutMargins.left
+                          withOffset:8
                             relation:NSLayoutRelationGreaterThanOrEqual];
         
-        [self.titleLabel autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeBottom];
-        [self.countLabel autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeTop];
+        [self.titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
+        [self.countLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
         [self.countLabel autoPinEdge:ALEdgeTop
                               toEdge:ALEdgeBottom
                               ofView:self.titleLabel
-                          withOffset:self.countLabel.layoutMargins.top
+                          withOffset:8
                             relation:NSLayoutRelationGreaterThanOrEqual];
         
         self.didSetupConstraints = YES;

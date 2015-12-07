@@ -86,6 +86,14 @@
     [self selectDefaultAssetCollection];
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8){
+        [self.tableView reloadData];
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -113,7 +121,7 @@
 
 - (KITAssetsPickerController *)picker
 {
-    return (KITAssetsPickerController *)self.splitViewController.parentViewController;
+    return (KITAssetsPickerController *)self.navigationController.parentViewController;
 }
 
 - (NSIndexPath *)indexPathForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection
@@ -134,9 +142,7 @@
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     self.tableView.estimatedRowHeight =
-    self.picker.assetCollectionThumbnailSize.height +
-    self.tableView.layoutMargins.top +
-    self.tableView.layoutMargins.bottom;
+    self.picker.assetCollectionThumbnailSize.height + 16;
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
@@ -250,7 +256,7 @@
 
 - (BOOL)isTopViewController
 {
-    UIViewController *vc = self.splitViewController.viewControllers.lastObject;
+    UIViewController *vc = self.navigationController;
     
     if ([vc isMemberOfClass:[UINavigationController class]])
         return (self == ((UINavigationController *)vc).topViewController);
@@ -369,7 +375,7 @@
     nav.delegate = (id<UINavigationControllerDelegate>)self.picker;
     
     [self.picker setShouldCollapseDetailViewController:NO];
-    [self.splitViewController showDetailViewController:nav sender:nil];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 
@@ -387,7 +393,7 @@
         nav.delegate = (id<UINavigationControllerDelegate>)self.picker;
         
         [self.picker setShouldCollapseDetailViewController:NO];        
-        [self.splitViewController showDetailViewController:nav sender:nil];
+        [self.navigationController pushViewController:vc animated:YES];
 
         NSIndexPath *indexPath = [self indexPathForAssetCollection:self.defaultAssetCollection];
         [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
@@ -407,12 +413,12 @@
             [UIView animateWithDuration:0.0f
                              animations:^{
                                  [self.tableView selectRowAtIndexPath:indexPath
-                                                             animated:(!self.splitViewController.collapsed)
+                                                             animated:YES
                                                        scrollPosition:UITableViewScrollPositionTop];
                          }
                          completion:^(BOOL finished){
                              // mimic clearsSelectionOnViewWillAppear
-                             if (finished && self.splitViewController.collapsed)
+                             if (finished)
                                  [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
                          }];
         }

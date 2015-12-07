@@ -31,7 +31,12 @@
 
 + (UIImage *)KITAssetsPickerImageNamed:(NSString *)name
 {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8){
     return [UIImage imageNamed:name inBundle:[NSBundle KITAssetsPickerBundle] compatibleWithTraitCollection:nil];
+}
+    else{
+        return [UIImage imageNamed:name];
+    }
 }
 
 @end
