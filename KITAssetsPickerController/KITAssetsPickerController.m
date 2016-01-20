@@ -71,7 +71,6 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
         _showsCancelButton                  = YES;
         _showsEmptyAlbums                   = YES;
         _showsNumberOfAssets                = YES;
-        _alwaysEnableDoneButton             = NO;
         _showsSelectionIndex                = NO;
         
         self.preferredContentSize           = KITAssetsPickerPopoverContentSize;
@@ -300,7 +299,7 @@ NSString * const KITAssetsPickerDidDeselectAssetNotification = @"KITAssetsPicker
     
     if ([vc isMemberOfClass:[UINavigationController class]])
     {
-        BOOL enabled = (self.alwaysEnableDoneButton) ? YES : (self.selectedAssets.count > 0);
+        BOOL enabled = (self.selectedAssets.count > 0);
         
         for (UIViewController *viewController in ((UINavigationController *)vc).viewControllers)
             viewController.navigationItem.rightBarButtonItem.enabled = enabled;

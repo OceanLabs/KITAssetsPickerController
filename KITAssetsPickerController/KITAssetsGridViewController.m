@@ -95,7 +95,6 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     [super viewDidLoad];
     [self setupViews];
-    [self setupButtons];
     [self addGestureRecognizer];
     [self addNotificationObserver];
     [self resetCachedAssetImages];
@@ -105,6 +104,7 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 {
     [super viewWillAppear:animated];
     [self setupAssets];
+    [self setupButtons];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -133,6 +133,11 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
         [self scrollToBottomIfNeeded];
         self.didLayoutSubviews = YES;
     }
+}
+
+- (void)updateButton:(NSArray *)selectedAssets
+{
+        self.navigationItem.rightBarButtonItem.enabled = (self.picker.selectedAssets.count > 0);
 }
 
 - (void)dealloc
@@ -166,11 +171,20 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
 
 - (void)setupButtons
 {
+    if (self.navigationController.viewControllers.count == 1){
+        self.navigationItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:KITAssetsPickerLocalizedString(@"Cancel", nil)
+                                         style:UIBarButtonItemStylePlain
+                                        target:self.picker
+                                        action:@selector(dismiss:)];
+    }
+    
     self.navigationItem.rightBarButtonItem =
     [[UIBarButtonItem alloc] initWithTitle:KITAssetsPickerLocalizedString(@"Done", nil)
                                      style:UIBarButtonItemStyleDone
                                     target:self.picker
                                     action:@selector(finishPickingAssets:)];
+    [self updateButton:self.picker.selectedAssets];
 }
 
 - (void)setupAssets
@@ -530,8 +544,37 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     
     [self.picker selectAsset:asset];
     
+    [self updateTitle:self.picker.selectedAssets];
+    [self updateButton:self.picker.selectedAssets];
+    
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didSelectAsset:)])
         [self.picker.delegate assetsPickerController:self.picker didSelectAsset:asset];
+}
+
+- (void)updateTitle:(NSArray *)selectedAssets
+{
+    if ([self isTopViewController] && selectedAssets.count > 0)
+        self.title = self.picker.selectedAssetsString;
+    else
+        [self resetTitle];
+}
+
+- (BOOL)isTopViewController
+{
+    UIViewController *vc = self.navigationController;
+    
+    if ([vc isMemberOfClass:[UINavigationController class]])
+        return (self == ((UINavigationController *)vc).topViewController);
+    else
+        return NO;
+}
+
+- (void)resetTitle
+{
+    if (!self.picker.title)
+        self.title = KITAssetsPickerLocalizedString(@"Photos", nil);
+    else
+        self.title = self.picker.title;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -549,6 +592,9 @@ NSString * const KITAssetsGridViewFooterIdentifier = @"KITAssetsGridViewFooterId
     id<KITAssetDataSource> asset = [self assetAtIndexPath:indexPath];
     
     [self.picker deselectAsset:asset];
+    
+    [self updateTitle:self.picker.selectedAssets];
+    [self updateButton:self.picker.selectedAssets];
     
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didDeselectAsset:)])
         [self.picker.delegate assetsPickerController:self.picker didDeselectAsset:asset];

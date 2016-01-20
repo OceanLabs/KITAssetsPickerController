@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                  = 'KITAssetsPickerController'
-  spec.version               = '1.0.1'
+  spec.version               = '1.0.2'
   spec.summary               = 'iOS control that allows picking multiple photos from custom data sources.'
 
   spec.description           = <<-DESC

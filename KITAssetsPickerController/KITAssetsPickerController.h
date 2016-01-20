@@ -79,14 +79,6 @@
 @property (nonatomic, assign) BOOL showsNumberOfAssets;
 
 /**
- *  Determines whether or not the done button is always enabled.
- *
- *  The done button is enabled only when assets are selected. To enable the done button even without assets selected,
- *  set this property’s value to `YES`.
- */
-@property (nonatomic, assign) BOOL alwaysEnableDoneButton;
-
-/**
  *  Determines whether or not the selection order is shown in the grid view.
  *
  *  Only a checkmark is shown on selected assets by default. To shows the order of selection,
