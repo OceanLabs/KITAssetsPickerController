@@ -28,7 +28,7 @@
 
 @protocol KITAssetsPickerControllerDelegate;
 
-@protocol KITAssetCustomPickerController
+@protocol KITCustomAssetPickerController
 
 @property (weak, nonatomic) id<KITAssetsPickerControllerDelegate> delegate;
 
