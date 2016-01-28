@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                  = 'KITAssetsPickerController'
-  spec.version               = '1.0.3'
+  spec.version               = '1.0.4'
   spec.summary               = 'iOS control that allows picking multiple photos from custom data sources.'
 
   spec.description           = <<-DESC
@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   spec.social_media_url      = 'https://twitter.com/kkarayannis'
   spec.platform              = :ios, '7.0'
   spec.ios.deployment_target = '7.0'
-  spec.source                = { :git => 'https://github.com/Oceanlabs/KITAssetsPickerController.git', :tag => '1.0.3' }
+  spec.source                = { :git => 'https://github.com/Oceanlabs/KITAssetsPickerController.git', :tag => '1.0.4' }
   spec.public_header_files   = 'KITAssetsPickerController/*.h'
   spec.source_files          = 'KITAssetsPickerController/**/*.{h,m}'
   spec.resource_bundles      = { 'KITAssetsPickerController' => ['KITAssetsPickerController/Resources/KITAssetsPicker.xcassets/*/*.png', 'KITAssetsPickerController/Resources/*.lproj'] }

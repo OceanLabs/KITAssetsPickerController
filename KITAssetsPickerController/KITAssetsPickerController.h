@@ -28,13 +28,14 @@
 #import <UIKit/UIKit.h>
 #import "KITAssetDataSource.h"
 #import "KITAssetCollectionDataSource.h"
+#import "KITAssetCustomPickerController.h"
 
 @protocol KITAssetsPickerControllerDelegate;
 
 /**
  *  A controller that allows picking multiple photos and videos from user's photo library.
  */
-@interface KITAssetsPickerController : UIViewController
+@interface KITAssetsPickerController : UIViewController <KITAssetCustomPickerController>
 
 /**
  *  The assets picker’s delegate object.
