@@ -125,7 +125,7 @@
                 numberOfPhotos = [nf KITAssetsPickerStringFromAssetsCount:photoCount];
         
             if (photoCount > 0)
-                self.label.text = [NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Photos", nil), numberOfPhotos];
+                self.label.text = @"";//[NSString stringWithFormat:KITAssetsPickerLocalizedString(@"%@ Photos", nil), numberOfPhotos];
 
             else
                 self.label.text = @"";
