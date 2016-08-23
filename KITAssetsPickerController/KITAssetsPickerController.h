@@ -142,7 +142,7 @@
  *
  *  @see assetsPickerControllerDidCancel:
  */
-- (void)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker didFinishPickingAssets:(NSArray *)assets;
+- (void)assetsPickerController:(id<KITCustomAssetPickerController>)picker didFinishPickingAssets:(NSArray *)assets;
 
 @optional
 
@@ -153,7 +153,7 @@
  *
  *  @see assetsPickerController:didFinishPickingAssets:
  */
-- (void)assetsPickerControllerDidCancel:(id<KITAssetsPickerControllerDelegate>)picker;
+- (void)assetsPickerControllerDidCancel:(id<KITCustomAssetPickerController>)picker;
 
 
 /**
@@ -169,7 +169,7 @@
  *
  *  @return Custom `UICollectionViewLayout` for the asset selection view.
  */
-- (UICollectionViewLayout *)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker collectionViewLayoutForContentSize:(CGSize)contentSize traitCollection:(UITraitCollection *)trait;
+- (UICollectionViewLayout *)assetsPickerController:(id<KITCustomAssetPickerController>)picker collectionViewLayoutForContentSize:(CGSize)contentSize traitCollection:(UITraitCollection *)trait;
 
 
 /**
@@ -180,7 +180,7 @@
  *
  *  @return `YES` (the default) if the asset grid should scroll to bottom on shown or `NO` if it should not.
  */
-- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldScrollToBottomForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
+- (BOOL)assetsPickerController:(id<KITCustomAssetPickerController>)picker shouldScrollToBottomForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
 
 
 /**
@@ -197,7 +197,7 @@
  *
  *  @see assetsPickerController:shouldShowAsset:
  */
-- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldEnableAsset:(id<KITAssetDataSource> )asset;
+- (BOOL)assetsPickerController:(id<KITCustomAssetPickerController>)picker shouldEnableAsset:(id<KITAssetDataSource> )asset;
 
 
 /**
@@ -214,7 +214,7 @@
  *
  *  @see assetsPickerController:shouldDeselectAsset:
  */
-- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldSelectAsset:(id<KITAssetDataSource> )asset;
+- (BOOL)assetsPickerController:(id<KITCustomAssetPickerController>)picker shouldSelectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that the asset was selected.
@@ -224,7 +224,7 @@
  *
  *  @see assetsPickerController:didDeselectAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didSelectAsset:(id<KITAssetDataSource> )asset;
+- (void)assetsPickerController:(id<KITCustomAssetPickerController>)picker didSelectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Asks the delegate if the specified asset should be deselected.
@@ -236,7 +236,7 @@
  *
  *  @see assetsPickerController:shouldSelectAsset:
  */
-- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldDeselectAsset:(id<KITAssetDataSource> )asset;
+- (BOOL)assetsPickerController:(id<KITCustomAssetPickerController>)picker shouldDeselectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that the item at the specified path was deselected.
@@ -246,7 +246,7 @@
  *
  *  @see assetsPickerController:didSelectAsset:
  */
-- (void)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker didDeselectAsset:(id<KITAssetDataSource> )asset;
+- (void)assetsPickerController:(id<KITCustomAssetPickerController>)picker didDeselectAsset:(id<KITAssetDataSource> )asset;
 
 
 
