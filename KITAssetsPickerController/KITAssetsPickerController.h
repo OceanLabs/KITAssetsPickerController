@@ -142,7 +142,7 @@
  *
  *  @see assetsPickerControllerDidCancel:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didFinishPickingAssets:(NSArray *)assets;
+- (void)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker didFinishPickingAssets:(NSArray *)assets;
 
 @optional
 
@@ -153,7 +153,7 @@
  *
  *  @see assetsPickerController:didFinishPickingAssets:
  */
-- (void)assetsPickerControllerDidCancel:(KITAssetsPickerController *)picker;
+- (void)assetsPickerControllerDidCancel:(id<KITAssetsPickerControllerDelegate>)picker;
 
 
 /**
@@ -169,7 +169,7 @@
  *
  *  @return Custom `UICollectionViewLayout` for the asset selection view.
  */
-- (UICollectionViewLayout *)assetsPickerController:(KITAssetsPickerController *)picker collectionViewLayoutForContentSize:(CGSize)contentSize traitCollection:(UITraitCollection *)trait;
+- (UICollectionViewLayout *)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker collectionViewLayoutForContentSize:(CGSize)contentSize traitCollection:(UITraitCollection *)trait;
 
 
 /**
@@ -180,7 +180,7 @@
  *
  *  @return `YES` (the default) if the asset grid should scroll to bottom on shown or `NO` if it should not.
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldScrollToBottomForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
+- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldScrollToBottomForAssetCollection:(id<KITAssetCollectionDataSource>)assetCollection;
 
 
 /**
@@ -197,7 +197,7 @@
  *
  *  @see assetsPickerController:shouldShowAsset:
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldEnableAsset:(id<KITAssetDataSource> )asset;
+- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldEnableAsset:(id<KITAssetDataSource> )asset;
 
 
 /**
@@ -214,7 +214,7 @@
  *
  *  @see assetsPickerController:shouldDeselectAsset:
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldSelectAsset:(id<KITAssetDataSource> )asset;
+- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldSelectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that the asset was selected.
@@ -236,7 +236,7 @@
  *
  *  @see assetsPickerController:shouldSelectAsset:
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldDeselectAsset:(id<KITAssetDataSource> )asset;
+- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldDeselectAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that the item at the specified path was deselected.
@@ -246,7 +246,7 @@
  *
  *  @see assetsPickerController:didSelectAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didDeselectAsset:(id<KITAssetDataSource> )asset;
+- (void)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker didDeselectAsset:(id<KITAssetDataSource> )asset;
 
 
 
@@ -262,7 +262,7 @@
  *
  *  @return `YES` if the asset should be highlighted or `NO` if it should not.
  */
-- (BOOL)assetsPickerController:(KITAssetsPickerController *)picker shouldHighlightAsset:(id<KITAssetDataSource> )asset;
+- (BOOL)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker shouldHighlightAsset:(id<KITAssetDataSource> )asset;
 
 /**
  *  Tells the delegate that asset was highlighted.
@@ -272,7 +272,7 @@
  *
  *  @see assetsPickerController:didUnhighlightAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didHighlightAsset:(id<KITAssetDataSource> )asset;
+- (void)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker didHighlightAsset:(id<KITAssetDataSource> )asset;
 
 
 /**
@@ -283,7 +283,7 @@
  *
  *  @see assetsPickerController:didHighlightAsset:
  */
-- (void)assetsPickerController:(KITAssetsPickerController *)picker didUnhighlightAsset:(id<KITAssetDataSource> )asset;
+- (void)assetsPickerController:(id<KITAssetsPickerControllerDelegate>)picker didUnhighlightAsset:(id<KITAssetDataSource> )asset;
 
 
 
